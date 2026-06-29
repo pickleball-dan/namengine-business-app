@@ -1473,7 +1473,7 @@ def absolute_url(path):
 
 
 def build_share_meta(payload, mode='shortlist'):
-    image_url = absolute_url(url_for('static', filename='images/namengine-business-card-share.jpg'))
+    image_url = absolute_url(url_for('static', filename='images/namengine-business-card-share-v2.jpg'))
     if mode == 'original':
         names = ', '.join(item['name'] for item in payload.get('names', [])[:3])
         title = 'Original business names by NamEngine Business'
@@ -2215,7 +2215,7 @@ def get_shortlist_or_404(shortlist_id):
 @app.route('/', methods=['GET'])
 def home():
     form_data = normalized_form_data(request.args)
-    homepage_meta_image = absolute_url(url_for('static', filename='images/namengine-business-card-share.jpg'))
+    homepage_meta_image = absolute_url(url_for('static', filename='images/namengine-business-card-share-v2.jpg'))
     homepage_url = absolute_url(url_for('home'))
     return render_template(
         'index.html',
