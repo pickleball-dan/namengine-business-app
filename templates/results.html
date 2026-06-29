@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your business name list | NamEngine Business</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <main class="shell results-shell">
+    <section class="results-header results-header-grid">
+      <div>
+        <img class="logo-lockup small-logo" src="{{ url_for('static', filename='images/namengine-business-logo.png') }}" alt="NamEngine Business logo">
+        <p class="eyebrow">{{ round_label }}</p>
+        <h1>{% if round_number == 1 %}Take a look at these business names.{% elif round_number == 2 %}Do these names feel closer to what you want?{% else %}Can you imagine building around one of these?{% endif %}</h1>
+      </div>
+      <aside class="summary-card compact-summary-card">
+        <p class="panel-label">Selected feeling</p>
+        <p class="summary-chip">{{ preference_summary }}</p>
+        <p class="summary-note">{{ editor_note }}</p>
+        {% if reaction_effect_note %}
+        <div class="reaction-effect-note">
+          <p class="panel-label">What changed</p>
+          <p>{{ reaction_effect_note }}</p>
+        </div>
+        {% endif %}
+        {% if used_fallback %}
+        <div class="notice">We’re showing curated starter suggestions for the moment.</div>
+        {% endif %}
+      </aside>
+    </section>
+
+    {% if can_refine %}
+    <form action="{{ url_for('refine_results') }}" method="post" class="results-grid-form js-loading-form" data-loading-text="Building a more focused list...">
+      {% for key, value in form_data.items() %}
+      <input type="hidden" name="{{ key }}" value="{{ value }}">
+      {% endfor %}
+      <input type="hidden" name="shortlist_id" value="{{ shortlist_id }}">
+
+      <section class="results-grid">
+        {% for item in names %}
+        <article class="name-card {% if item.standout %}featured-card{% endif %}">
+          <div class="name-top">
+            <div>
+              <p class="card-kicker">{{ item.rank_label }}</p>
+              <h2>{{ item.name }}</h2>
+              <p class="pronunciation">/{{ item.pronunciation }}/</p>
+            </div>
+            {% if item.standout %}
+            <span class="card-badge">Standout</span>
+            {% endif %}
+          </div>
+          {% if item.emotional_opener %}
+          <p class="emotional-opener">{{ item.emotional_opener }}</p>
+          {% endif %}
+          <div class="detail-row">
+            <p><strong>Origin</strong><span>{{ item.origin }}</span></p>
+            <p><strong>Meaning</strong><span>{{ item.meaning }}</span></p>
+          </div>
+          <p class="why">{{ item.why }}</p>
+          <div class="reaction-block">
+            <p class="reaction-feedback" aria-live="polite"></p>
+            <div class="reaction-options">
+              {% for option in reaction_options %}
+              <label class="reaction-pill reaction-pill-{{ option.value }} {% if reactions.get(item.slug) == option.value %}is-selected{% endif %}" data-feedback="{{ option.hover_text }}">
+                <input type="radio" name="reaction__{{ item.slug }}" value="{{ option.value }}" aria-label="{{ option.label }}" {% if reactions.get(item.slug) == option.value %}checked{% endif %}>
+                <span class="reaction-choice">
+                  <img class="reaction-image" src="{{ url_for('static', filename=option.image) }}" alt="" aria-hidden="true">
+                  <span class="reaction-text">{{ option.label }}</span>
+                </span>
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+          <details class="fit-preview">
+            <summary>Why this name?</summary>
+            <div class="fit-bubble">
+              <p>{{ item.fit_note }}</p>
+              <a href="{{ url_for('name_detail', slug=item.slug) }}?shortlist={{ shortlist_id }}" class="button-link tertiary-button detail-link">Open full detail</a>
+            </div>
+          </details>
+        </article>
+        {% endfor %}
+      </section>
+
+      {% if taste_summary_note %}
+      <section class="taste-summary-card">
+        <p class="panel-label">We think you're drawn toward</p>
+        <p>{{ taste_summary_note }}</p>
+      </section>
+      {% endif %}
+
+      <section class="refine-panel">
+        <div>
+          <h2>React, then get another set.</h2>
+          <p class="progress-note prominent-progress js-reaction-progress">
+            <span class="js-reaction-progress-label">{{ reaction_progress_label }}</span>
+            <span class="reaction-progress-track" aria-hidden="true">
+              <span class="js-reaction-progress-fill"></span>
+            </span>
+          </p>
+        </div>
+        <div class="refine-actions">
+          <button type="submit" class="js-loading-button" {% if not has_enough_reactions %}disabled{% endif %}>Generate a more focused list</button>
+          <a class="button-link secondary-button" href="{{ refine_link }}">Refine taste</a>
+          <button type="button" class="button-link secondary-button js-share-trigger" data-share-url="{{ share_url }}" data-share-message="{{ share_message }}">Share list</button>
+          {% if feedback_enabled %}
+          <a class="button-link tertiary-button" href="{{ url_for('feedback') }}">Give feedback</a>
+          {% endif %}
+          <p class="loading-note js-loading-note" aria-live="polite">Sharpening around your taste signals...</p>
+          <p class="loading-note js-share-feedback" aria-live="polite"></p>
+        </div>
+      </section>
+    </form>
+    {% else %}
+    <section class="results-grid">
+      {% for item in names %}
+      <article class="name-card {% if item.standout %}featured-card{% endif %}">
+        <div class="name-top">
+          <div>
+            <p class="card-kicker">{{ item.rank_label }}</p>
+            <h2>{{ item.name }}</h2>
+            <p class="pronunciation">/{{ item.pronunciation }}/</p>
+          </div>
+          {% if item.standout %}
+          <span class="card-badge">Standout</span>
+          {% endif %}
+        </div>
+        {% if item.emotional_opener %}
+        <p class="emotional-opener">{{ item.emotional_opener }}</p>
+        {% endif %}
+        <div class="detail-row">
+          <p><strong>Origin</strong><span>{{ item.origin }}</span></p>
+          <p><strong>Meaning</strong><span>{{ item.meaning }}</span></p>
+        </div>
+        <p class="why">{{ item.why }}</p>
+        <details class="fit-preview">
+          <summary>Why this name?</summary>
+          <div class="fit-bubble">
+            <p>{{ item.fit_note }}</p>
+            <a href="{{ url_for('name_detail', slug=item.slug) }}?shortlist={{ shortlist_id }}" class="button-link tertiary-button detail-link">Open full detail</a>
+          </div>
+        </details>
+      </article>
+      {% endfor %}
+    </section>
+
+    {% if taste_summary_note %}
+    <section class="taste-summary-card">
+      <p class="panel-label">We think you're drawn toward</p>
+      <p>{{ taste_summary_note }}</p>
+    </section>
+    {% endif %}
+
+    <section class="results-grid final-choice-grid">
+      <article class="refine-panel final-panel final-choice-card">
+        <div>
+          <h2>Found the one?</h2>
+        </div>
+        <div class="refine-actions action-stack">
+          <button type="button" class="button-link js-share-trigger" data-share-url="{{ share_url }}" data-share-message="{{ share_message }}">Share list</button>
+          {% if feedback_enabled %}
+          <a class="button-link tertiary-button" href="{{ url_for('feedback') }}">Give feedback</a>
+          {% endif %}
+          <p class="loading-note js-share-feedback" aria-live="polite"></p>
+        </div>
+      </article>
+
+      <article class="refine-panel final-panel final-choice-card">
+        <div>
+          <h2>Keep exploring.</h2>
+        </div>
+        <div class="refine-actions action-stack">
+          <a class="button-link" href="{{ refine_link }}">Refine taste</a>
+          <a class="button-link secondary-button" href="{{ start_over_link }}">Start over</a>
+        </div>
+      </article>
+    </section>
+    {% endif %}
+  </main>
+
+  <script src="{{ url_for('static', filename='taste-history.js') }}"></script>
+  <script>
+    if (window.NamEngineTasteHistory) {
+      window.NamEngineTasteHistory.trackLovedNames({
+        mode: 'Curated',
+        summary: {{ preference_summary|tojson }},
+        shareUrl: {{ share_url|tojson }},
+      });
+    }
+
+    document.querySelectorAll('.js-loading-form').forEach((form) => {
+      form.addEventListener('submit', () => {
+        const button = form.querySelector('.js-loading-button');
+        const note = form.querySelector('.js-loading-note');
+        if (button) {
+          button.dataset.originalText = button.textContent;
+          button.textContent = form.dataset.loadingText || 'Working...';
+          button.disabled = true;
+        }
+        if (note) {
+          note.classList.add('is-visible');
+        }
+      });
+    });
+
+    document.querySelectorAll('.results-grid-form').forEach((form) => {
+      const button = form.querySelector('.js-loading-button');
+      const progressLabel = form.querySelector('.js-reaction-progress-label');
+      const progressFill = form.querySelector('.js-reaction-progress-fill');
+      const cards = Array.from(form.querySelectorAll('.name-card'));
+      const feedbackTimers = new WeakMap();
+
+      const showReactionFeedback = (pill) => {
+        const card = pill.closest('.name-card');
+        const feedback = card ? card.querySelector('.reaction-feedback') : null;
+        if (!feedback) {
+          return;
+        }
+
+        const timer = feedbackTimers.get(feedback);
+        if (timer) {
+          clearTimeout(timer);
+        }
+
+        feedback.textContent = pill.dataset.feedback || '';
+        feedback.classList.add('is-visible');
+        feedbackTimers.set(feedback, setTimeout(() => {
+          feedback.classList.remove('is-visible');
+        }, 3000));
+      };
+
+      const refresh = () => {
+        let selected = 0;
+        cards.forEach((card) => {
+          const chosen = card.querySelector('input[type="radio"]:checked');
+          card.querySelectorAll('.reaction-pill').forEach((pill) => {
+            const input = pill.querySelector('input');
+            pill.classList.toggle('is-selected', input.checked);
+          });
+          if (chosen) {
+            selected += 1;
+          }
+        });
+
+        if (progressLabel) {
+          progressLabel.textContent = `${selected} of ${cards.length} reactions`;
+        }
+        if (progressFill) {
+          const fillPercent = cards.length ? (selected / cards.length) * 100 : 0;
+          progressFill.style.width = `${fillPercent}%`;
+        }
+        if (button) {
+          button.disabled = selected < 3;
+        }
+      };
+
+      form.addEventListener('change', (event) => {
+        if (event.target.matches('input[type="radio"]')) {
+          const pill = event.target.closest('.reaction-pill');
+          refresh();
+          if (pill) {
+            showReactionFeedback(pill);
+          }
+        }
+      });
+
+      refresh();
+    });
+
+    const absoluteShareUrl = (path) => new URL(path, window.location.origin).toString();
+
+    document.querySelectorAll('.share-actions').forEach((actions) => {
+      if (navigator.share) {
+        actions.classList.add('is-native');
+      }
+    });
+
+    document.querySelectorAll('.js-share-trigger').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const path = button.dataset.shareUrl;
+        const text = button.dataset.shareMessage;
+        const feedback = document.querySelector('.js-share-feedback');
+        const shareUrl = absoluteShareUrl(path);
+
+        try {
+          if (navigator.share) {
+            await navigator.share({
+              title: 'My NamEngine Business list',
+              text,
+              url: shareUrl,
+            });
+            if (feedback) {
+              feedback.textContent = 'Shared.';
+              feedback.classList.add('is-visible');
+            }
+            return;
+          }
+
+          await navigator.clipboard.writeText(shareUrl);
+          if (feedback) {
+            feedback.textContent = 'Share link copied.';
+            feedback.classList.add('is-visible');
+          }
+        } catch (error) {
+          if (feedback) {
+            feedback.textContent = 'Share cancelled.';
+            feedback.classList.add('is-visible');
+          }
+        }
+      });
+    });
+
+    document.querySelectorAll('.js-share-fallback').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const feedback = document.querySelector('.js-share-feedback');
+        try {
+          await navigator.clipboard.writeText(absoluteShareUrl(button.dataset.shareUrl));
+          if (feedback) {
+            feedback.textContent = 'Share link copied.';
+            feedback.classList.add('is-visible');
+          }
+        } catch (error) {
+          if (feedback) {
+            feedback.textContent = 'Could not copy link.';
+            feedback.classList.add('is-visible');
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

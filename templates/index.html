@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NamEngine Business</title>
+  <meta name="description" content="Thoughtful business naming, original-name creation, and beautifully shareable lists from NamEngine Business.">
+  <meta property="og:title" content="NamEngine Business">
+  <meta property="og:description" content="Thoughtful business naming, original-name creation, and beautifully shareable lists from NamEngine Business.">
+  <meta property="og:image" content="{{ homepage_meta_image }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:url" content="{{ homepage_url }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="NamEngine Business">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="NamEngine Business">
+  <meta name="twitter:description" content="Thoughtful business naming, original-name creation, and beautifully shareable lists from NamEngine Business.">
+  <meta name="twitter:image" content="{{ homepage_meta_image }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <main class="shell home-shell">
+    <section class="hero-card home-hero-card home-hero-solo">
+      <div>
+        {% if feedback_enabled %}
+        <div class="home-utility-actions">
+          <a class="feedback-mini-link" href="{{ url_for('feedback') }}">Give beta feedback</a>
+        </div>
+        {% endif %}
+        <img class="logo-lockup" src="{{ url_for('static', filename='images/namengine-business-logo.png') }}" alt="NamEngine Business logo">
+        <p class="eyebrow">Thoughtful business naming, without the noise</p>
+        <h1>Find the name your idea can grow into.</h1>
+        <p class="home-subheading">Discover business names shaped by positioning, sound, memorability, and fit.</p>
+        <div class="hero-actions dual-actions home-path-actions">
+          <a class="button-link home-path-button" href="#brief">
+            <span>Start naming your idea</span>
+          </a>
+          <a class="button-link home-path-button original-path-button" href="{{ url_for('original_name') }}">
+            <span>Create something original</span>
+          </a>
+        </div>
+        <details class="process-disclosure">
+          <summary>How we work with you</summary>
+          <div class="process-body">
+            <article>
+              <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.8 4.6c-1.6-1.6-4.1-1.5-5.7.1L12 7.8 8.9 4.7C7.3 3.1 4.8 3 3.2 4.6 1.5 6.3 1.6 9 3.3 10.7L12 19.4l8.7-8.7c1.7-1.7 1.8-4.4.1-6.1Z"/></svg></span>
+              <div class="process-copy">
+                <h2>We start with what you love.</h2>
+                <p>NamEngine learns the sounds, styles, origins, meanings, and popularity range you are drawn to.</p>
+              </div>
+            </article>
+            <article>
+              <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/><path d="M8 6v0"/><path d="M15 12v0"/><path d="M11 18v0"/></svg></span>
+              <div class="process-copy">
+                <h2>We balance the list.</h2>
+                <p>Your list blends familiar options, fresh discoveries, and names that fit the feeling you described.</p>
+              </div>
+            </article>
+            <article>
+              <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 11v8"/><path d="M11 7v12"/><path d="M15 13v6"/><path d="M19 5v14"/></svg></span>
+              <div class="process-copy">
+                <h2>You react naturally.</h2>
+                <p>Mark what you love, what feels close, and what misses so the next round can move in the right direction.</p>
+              </div>
+            </article>
+            <article>
+              <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 20 4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10L4 20Z"/><path d="m13.5 6.5 4 4"/></svg></span>
+              <div class="process-copy">
+                <h2>We refine around your taste.</h2>
+                <p>Each focused list uses your reactions to sharpen the sound, style, and emotional fit.</p>
+              </div>
+            </article>
+            <article>
+              <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/></svg></span>
+              <div class="process-copy">
+                <h2>Your taste stays private.</h2>
+                <p>We use your naming notes to shape your list. You decide if and when to share it.</p>
+              </div>
+            </article>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="form-card" id="brief">
+      <div class="section-heading">
+        <h2>What are we naming?</h2>
+      </div>
+
+      <form action="/results" method="post" class="intake-form js-loading-form {% if live_brief_enabled %}js-brief-builder-form{% endif %}" data-loading-text="Gathering your list...">
+        <div class="brief-builder-layout {% if live_brief_enabled %}has-live-brief{% endif %}">
+          <div class="brief-builder-fields">
+            <div class="grid two-up">
+              <label>
+                <span>Discovery style</span>
+                <div class="select-wrap tinted-select tinted-amber">
+                  <select name="discovery_style" data-brief-label="Discovery">
+                    <option value="" {% if not form_data.discovery_style %}selected{% endif %}>Choose</option>
+                    {% for option in discovery_style_options %}
+                    <option {% if form_data.discovery_style == option %}selected{% endif %}>{{ option }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </label>
+
+              <label>
+                <span>What are you naming?</span>
+                <div class="select-wrap tinted-select tinted-aqua">
+                  <select name="pet_type" data-brief-label="Project">
+                    <option value="" {% if not form_data.pet_type %}selected{% endif %}>Choose</option>
+                    <option {% if form_data.pet_type == 'Business' %}selected{% endif %}>Business</option>
+                    <option {% if form_data.pet_type == 'Startup' %}selected{% endif %}>Startup</option>
+                    <option {% if form_data.pet_type == 'Product' %}selected{% endif %}>Product</option>
+                    <option {% if form_data.pet_type == 'App / software' %}selected{% endif %}>App / software</option>
+                    <option {% if form_data.pet_type == 'Studio / agency' %}selected{% endif %}>Studio / agency</option>
+                    <option {% if form_data.pet_type == 'Local service' %}selected{% endif %}>Local service</option>
+                    <option {% if form_data.pet_type == 'Nonprofit' %}selected{% endif %}>Nonprofit</option>
+                    <option {% if form_data.pet_type == 'Newsletter / media' %}selected{% endif %}>Newsletter / media</option>
+                    <option {% if form_data.pet_type == 'Other' %}selected{% endif %}>Other</option>
+                  </select>
+                </div>
+              </label>
+            </div>
+
+            <div class="grid two-up">
+              <label>
+                <span>What overall brand style feels closest?</span>
+                <div class="select-wrap tinted-select tinted-lilac">
+                  <select name="style" data-brief-label="Style">
+                    <option value="" {% if not form_data.style %}selected{% endif %}>Choose</option>
+                    <option {% if form_data.style == 'Classic' %}selected{% endif %}>Classic</option>
+                    <option {% if form_data.style == 'Modern' %}selected{% endif %}>Modern</option>
+                    <option {% if form_data.style == 'Soft and romantic' %}selected{% endif %}>Soft and romantic</option>
+                    <option {% if form_data.style == 'Strong and tailored' %}selected{% endif %}>Strong and tailored</option>
+                    <option {% if form_data.style == 'Uncommon but usable' %}selected{% endif %}>Uncommon but usable</option>
+                  </select>
+                </div>
+              </label>
+
+              <label>
+                <span>Would you lean more timeless or more distinctive?</span>
+                <div class="select-wrap tinted-select tinted-peach">
+                  <select name="timeless_vs_distinctive" data-brief-label="Balance">
+                    <option value="" {% if not form_data.timeless_vs_distinctive %}selected{% endif %}>Choose</option>
+                    <option {% if form_data.timeless_vs_distinctive == 'Strongly timeless' %}selected{% endif %}>Strongly timeless</option>
+                    <option {% if form_data.timeless_vs_distinctive == 'Mostly timeless' %}selected{% endif %}>Mostly timeless</option>
+                    <option {% if form_data.timeless_vs_distinctive == 'Balanced' %}selected{% endif %}>Balanced</option>
+                    <option {% if form_data.timeless_vs_distinctive == 'Mostly distinctive' %}selected{% endif %}>Mostly distinctive</option>
+                    <option {% if form_data.timeless_vs_distinctive == 'Strongly distinctive' %}selected{% endif %}>Strongly distinctive</option>
+                  </select>
+                </div>
+              </label>
+            </div>
+
+            <div class="grid two-up">
+              <label>
+                <span>How familiar should the name feel?</span>
+                <div class="select-wrap tinted-select tinted-rose">
+                  <select name="familiarity_preference" data-brief-label="Familiarity">
+                    <option value="" {% if not form_data.familiarity_preference %}selected{% endif %}>Choose</option>
+                    <option {% if form_data.familiarity_preference == 'Very familiar and easy' %}selected{% endif %}>Very familiar and easy</option>
+                    <option {% if form_data.familiarity_preference == 'Recognizable but not overused' %}selected{% endif %}>Recognizable but not overused</option>
+                    <option {% if form_data.familiarity_preference == 'A little less common' %}selected{% endif %}>A little less common</option>
+                    <option {% if form_data.familiarity_preference == 'Memorable and rarer' %}selected{% endif %}>Memorable and rarer</option>
+                  </select>
+                </div>
+              </label>
+
+              <label>
+                <span>How easy should it be to say and remember?</span>
+                <div class="select-wrap tinted-select tinted-mint">
+                  <select name="pronunciation_importance" data-brief-label="Memorable">
+                    <option value="" {% if not form_data.pronunciation_importance %}selected{% endif %}>Choose</option>
+                    <option {% if form_data.pronunciation_importance == 'Very important' %}selected{% endif %}>Very important</option>
+                    <option {% if form_data.pronunciation_importance == 'Helpful but not absolute' %}selected{% endif %}>Helpful but not absolute</option>
+                    <option {% if form_data.pronunciation_importance == 'Open to slight friction' %}selected{% endif %}>Open to slight friction</option>
+                  </select>
+                </div>
+              </label>
+            </div>
+
+            <div class="grid two-up">
+              <label>
+                <span>What should the name signal?</span>
+                <div class="select-wrap tinted-select tinted-sky">
+                  <select name="vibe" data-brief-label="Signal">
+                    <option value="" {% if not form_data.vibe %}selected{% endif %}>Choose</option>
+                    <option {% if form_data.vibe == 'Trustworthy' %}selected{% endif %}>Trustworthy</option>
+                    <option {% if form_data.vibe == 'Premium' %}selected{% endif %}>Premium</option>
+                    <option {% if form_data.vibe == 'Playful' %}selected{% endif %}>Playful</option>
+                    <option {% if form_data.vibe == 'Bold' %}selected{% endif %}>Bold</option>
+                    <option {% if form_data.vibe == 'Technical' %}selected{% endif %}>Technical</option>
+                    <option {% if form_data.vibe == 'Creative' %}selected{% endif %}>Creative</option>
+                    <option {% if form_data.vibe == 'Local' %}selected{% endif %}>Local</option>
+                    <option {% if form_data.vibe == 'Modern' %}selected{% endif %}>Modern</option>
+                    <option {% if form_data.vibe == 'Human' %}selected{% endif %}>Human</option>
+                    <option {% if form_data.vibe == 'Expert' %}selected{% endif %}>Expert</option>
+                  </select>
+                </div>
+              </label>
+
+              <label>
+                <span>Naming direction</span>
+                <div class="select-wrap tinted-select tinted-mint">
+                  <select name="cultural_context" data-brief-label="Direction">
+                    <option value="" {% if not form_data.cultural_context %}selected{% endif %}>No preference</option>
+                    {% for option in cultural_feel_options %}
+                    <option {% if form_data.cultural_context == option %}selected{% endif %}>{{ option }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </label>
+            </div>
+
+            <label>
+              <span>Anything you're torn between?</span>
+              <input type="text" name="partner_alignment" value="{{ form_data.partner_alignment }}" placeholder="Cute or serious, silly or elegant, descriptive or abstract, everyone else's opinions..." data-brief-label="Taste notes" data-brief-short="true">
+            </label>
+
+            <label>
+              <span>Tell us about the business</span>
+              <textarea name="notes" rows="3" placeholder="Industry, audience, offer, tone, competitors to avoid, words you like..." data-brief-label="Business notes" data-brief-short="true">{{ form_data.notes }}</textarea>
+            </label>
+
+            <div class="loading-wrap">
+              <button type="submit" class="js-loading-button">Get business name ideas</button>
+              <p class="loading-note js-loading-note" aria-live="polite">Looking for names that fit your idea...</p>
+            </div>
+          </div>
+
+          {% if live_brief_enabled %}
+          <details id="live-brief-panel" class="live-brief-panel js-live-brief-panel" aria-live="polite" aria-label="Your brand profile">
+            <summary class="live-brief-top">
+              <p class="panel-label">Your brand profile</p>
+              <span class="brief-strength-pill js-brief-strength">Light taste</span>
+              <div class="brief-strength-track" aria-hidden="true">
+                <span class="js-brief-strength-fill"></span>
+              </div>
+            </summary>
+            <div class="live-brief-body">
+              <ul class="live-brief-list js-live-brief-list">
+                <li>Start choosing what matters and NamEngine will keep track here.</li>
+              </ul>
+              <div class="taste-history js-taste-history" hidden>
+                <p class="panel-label">Loved names</p>
+                <p class="taste-history-note">Names you loved during this visit.</p>
+                <ul class="taste-history-list js-loved-names-list"></ul>
+                <button type="button" class="taste-history-open js-taste-history-open" hidden>
+                  <span>Taste history</span>
+                  <small class="js-taste-history-summary"></small>
+                </button>
+                <dialog class="taste-history-dialog js-taste-history-dialog" aria-label="Taste history">
+                  <div class="taste-history-dialog-card">
+                    <div class="taste-history-dialog-head">
+                      <div>
+                        <p class="panel-label">Taste history</p>
+                        <p class="taste-history-note">Searches from this visit with names you loved.</p>
+                      </div>
+                      <button type="button" class="taste-history-close js-taste-history-close" aria-label="Close taste history">Close</button>
+                    </div>
+                    <ul class="taste-history-session-list js-taste-history-list"></ul>
+                  </div>
+                </dialog>
+              </div>
+            </div>
+          </details>
+          {% endif %}
+        </div>
+      </form>
+    </section>
+  </main>
+  {% if live_brief_enabled %}
+  <button type="button" class="live-brief-mobile-tab js-live-brief-mobile-tab" aria-controls="live-brief-panel" aria-label="Review your taste" hidden>
+    <span>Taste</span>
+    <small class="js-taste-tab-count">0/8</small>
+  </button>
+  {% endif %}
+
+  <script src="{{ url_for('static', filename='taste-history.js') }}"></script>
+  <script>
+    document.querySelectorAll('.js-brief-builder-form').forEach((form) => {
+      const list = form.querySelector('.js-live-brief-list');
+      const strength = form.querySelector('.js-brief-strength');
+      const fill = form.querySelector('.js-brief-strength-fill');
+      const fields = Array.from(form.querySelectorAll('[data-brief-label]'));
+      const emptyValues = new Set(['', 'Choose', 'No preference']);
+
+      const strengthLabels = [
+        { min: 7, label: 'Highly tailored' },
+        { min: 5, label: 'Strong taste' },
+        { min: 3, label: 'Getting specific' },
+        { min: 1, label: 'Light taste' },
+      ];
+
+      const cleanFreeText = (value) => {
+        const trimmed = value.trim().replace(/\s+/g, ' ');
+        return trimmed.length > 64 ? `${trimmed.slice(0, 61)}...` : trimmed;
+      };
+
+      const focusBriefField = (field) => {
+        const wrapper = field.closest('label') || field;
+        wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        field.focus({ preventScroll: true });
+        wrapper.classList.add('is-brief-focus');
+        window.setTimeout(() => wrapper.classList.remove('is-brief-focus'), 900);
+      };
+
+      const renderBrief = () => {
+        const items = fields
+          .map((field) => {
+            const value = field.tagName === 'SELECT'
+              ? field.options[field.selectedIndex]?.textContent.trim()
+              : cleanFreeText(field.value || '');
+            if (!value || emptyValues.has(value)) {
+              return null;
+            }
+            return {
+              label: field.dataset.briefLabel,
+              value,
+              field,
+            };
+          })
+          .filter(Boolean);
+
+        list.innerHTML = '';
+        if (!items.length) {
+          const empty = document.createElement('li');
+          empty.textContent = 'Start choosing what matters and NamEngine will keep track here.';
+          list.appendChild(empty);
+        } else {
+          items.forEach((item) => {
+            const li = document.createElement('li');
+            const button = document.createElement('button');
+            const label = document.createElement('strong');
+            const value = document.createElement('span');
+            button.type = 'button';
+            button.className = 'live-brief-jump';
+            button.setAttribute('aria-label', `Change ${item.label}`);
+            label.textContent = item.label;
+            value.textContent = item.value;
+            button.append(label, value);
+            button.addEventListener('click', () => focusBriefField(item.field));
+            li.appendChild(button);
+            list.appendChild(li);
+          });
+        }
+
+        const selectedCount = items.length;
+        const activeLabel = strengthLabels.find((entry) => selectedCount >= entry.min)?.label || 'Light taste';
+        const progress = Math.min(100, Math.max(8, (selectedCount / 8) * 100));
+        strength.textContent = activeLabel;
+        fill.style.width = `${progress}%`;
+        if (liveBriefButton) {
+          liveBriefButton.style.setProperty('--taste-progress', `${progress}%`);
+        }
+        if (liveBriefButtonCount) {
+          liveBriefButtonCount.textContent = `${Math.min(selectedCount, 8)}/8`;
+        }
+      };
+
+      fields.forEach((field) => {
+        field.addEventListener('change', renderBrief);
+        field.addEventListener('input', renderBrief);
+      });
+
+      const liveBriefPanel = form.querySelector('.js-live-brief-panel');
+      const liveBriefButton = document.querySelector('.js-live-brief-mobile-tab');
+      const liveBriefButtonCount = liveBriefButton?.querySelector('.js-taste-tab-count');
+      const isDesktop = () => window.matchMedia('(min-width: 901px)').matches;
+      let intakeInView = true;
+      let reviewInView = false;
+      const syncMobileTab = () => {
+        if (!liveBriefPanel || !liveBriefButton) {
+          return;
+        }
+        liveBriefButton.hidden = !intakeInView || reviewInView;
+      };
+      const syncPanelForViewport = () => {
+        if (liveBriefPanel && isDesktop()) {
+          liveBriefPanel.setAttribute('open', '');
+        }
+        syncMobileTab();
+      };
+
+      if (liveBriefPanel && isDesktop()) {
+        liveBriefPanel.setAttribute('open', '');
+      }
+      if (liveBriefPanel && liveBriefButton) {
+        liveBriefButton.addEventListener('click', () => {
+          liveBriefPanel.setAttribute('open', '');
+          liveBriefPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          syncMobileTab();
+        });
+        liveBriefPanel.addEventListener('toggle', syncMobileTab);
+        if ('IntersectionObserver' in window) {
+          intakeInView = false;
+          const formObserver = new IntersectionObserver((entries) => {
+            intakeInView = entries.some((entry) => entry.isIntersecting);
+            syncMobileTab();
+          }, { rootMargin: '-12% 0px -18% 0px' });
+          const reviewObserver = new IntersectionObserver((entries) => {
+            reviewInView = entries.some((entry) => entry.isIntersecting);
+            syncMobileTab();
+          }, { rootMargin: '-18% 0px -28% 0px' });
+          formObserver.observe(form.closest('.form-card') || form);
+          reviewObserver.observe(liveBriefPanel);
+        }
+        window.addEventListener('resize', syncPanelForViewport);
+        syncPanelForViewport();
+      }
+      renderBrief();
+    });
+
+    if (window.NamEngineTasteHistory) {
+      window.NamEngineTasteHistory.renderLoved(document.querySelector('.js-taste-history'));
+    }
+
+    document.querySelectorAll('.js-loading-form').forEach((form) => {
+      form.addEventListener('submit', () => {
+        const button = form.querySelector('.js-loading-button');
+        const note = form.querySelector('.js-loading-note');
+        if (button) {
+          button.dataset.originalText = button.textContent;
+          button.textContent = form.dataset.loadingText || 'Working...';
+          button.disabled = true;
+        }
+        if (note) {
+          note.classList.add('is-visible');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

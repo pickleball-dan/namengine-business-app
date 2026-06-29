@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Beta feedback | NamEngine Business</title>
+  <meta name="description" content="Share beta feedback for NamEngine Business.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <main class="shell home-shell feedback-shell">
+    <section class="hero-card feedback-hero">
+      <div>
+        <img class="logo-lockup small-logo" src="{{ url_for('static', filename='images/namengine-business-logo.png') }}" alt="NamEngine Business logo">
+        <p class="eyebrow">Beta feedback</p>
+        <h1>Tell us what worked, what didn’t, and what felt missing.</h1>
+        <p class="lede">A few honest notes are more useful than a polished review. If something felt confusing, slow, awkward, surprisingly good, or worth sharing, put it here.</p>
+        <div class="hero-actions dual-actions">
+          <a class="button-link secondary-button" href="/">Back to NamEngine Business</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-card">
+      <div class="section-heading">
+        <h2>What should we know?</h2>
+      </div>
+
+      {% if submitted %}
+      <div class="notice success-notice">
+        Feedback received. Thank you for helping shape NamEngine Business.
+      </div>
+      {% endif %}
+
+      <form action="{{ url_for('feedback') }}" method="post" class="intake-form feedback-form">
+        <input type="hidden" name="page_url" value="{{ form_data.page_url }}">
+        <label class="feedback-honeypot" aria-hidden="true" tabindex="-1">
+          <span>Company website</span>
+          <input type="text" name="company_website" autocomplete="off" tabindex="-1">
+        </label>
+
+        <div class="grid two-up">
+          <label>
+            <span>Name</span>
+            <input type="text" name="name" value="{{ form_data.name }}" placeholder="Optional">
+          </label>
+
+          <label>
+            <span>Email</span>
+            <input type="email" name="email" value="{{ form_data.email }}" placeholder="Optional, if follow-up is okay">
+          </label>
+        </div>
+
+        <div class="grid two-up">
+          <label>
+            <span>How were you using it?</span>
+            <div class="select-wrap tinted-select tinted-aqua">
+              <select name="tester_type">
+                <option value="" {% if not form_data.tester_type %}selected{% endif %}>Choose</option>
+                <option {% if form_data.tester_type == 'Business name search' %}selected{% endif %}>Business name search</option>
+                <option {% if form_data.tester_type == 'Original business name creation' %}selected{% endif %}>Original business name creation</option>
+                <option {% if form_data.tester_type == 'Just exploring' %}selected{% endif %}>Just exploring</option>
+              </select>
+            </div>
+          </label>
+
+          <label>
+            <span>Overall impression</span>
+            <div class="select-wrap tinted-select tinted-amber">
+              <select name="overall_rating">
+                <option value="" {% if not form_data.overall_rating %}selected{% endif %}>Choose</option>
+                <option {% if form_data.overall_rating == 'Loved it' %}selected{% endif %}>Loved it</option>
+                <option {% if form_data.overall_rating == 'Promising' %}selected{% endif %}>Promising</option>
+                <option {% if form_data.overall_rating == 'Mixed' %}selected{% endif %}>Mixed</option>
+                <option {% if form_data.overall_rating == 'Confusing' %}selected{% endif %}>Confusing</option>
+              </select>
+            </div>
+          </label>
+        </div>
+
+        <div class="grid two-up">
+          <label>
+            <span>Did you try original business names?</span>
+            <div class="select-wrap tinted-select tinted-lilac">
+              <select name="used_original">
+                <option value="" {% if not form_data.used_original %}selected{% endif %}>Choose</option>
+                <option {% if form_data.used_original == 'Yes' %}selected{% endif %}>Yes</option>
+                <option {% if form_data.used_original == 'No' %}selected{% endif %}>No</option>
+                <option {% if form_data.used_original == 'Not sure' %}selected{% endif %}>Not sure</option>
+              </select>
+            </div>
+          </label>
+
+          <label>
+            <span>Would you share this with someone naming a business?</span>
+            <div class="select-wrap tinted-select tinted-mint">
+              <select name="would_share">
+                <option value="" {% if not form_data.would_share %}selected{% endif %}>Choose</option>
+                <option {% if form_data.would_share == 'Yes' %}selected{% endif %}>Yes</option>
+                <option {% if form_data.would_share == 'Maybe' %}selected{% endif %}>Maybe</option>
+                <option {% if form_data.would_share == 'No' %}selected{% endif %}>No</option>
+              </select>
+            </div>
+          </label>
+        </div>
+
+        <label>
+          <span>What did you like most?</span>
+          <textarea name="liked_most" rows="3" placeholder="A feature, a name, the flow, the reactions, the tone...">{{ form_data.liked_most }}</textarea>
+        </label>
+
+        <label>
+          <span>What felt confusing or awkward?</span>
+          <textarea name="confusing" rows="3" placeholder="Anything unclear, too much, too little, or oddly worded...">{{ form_data.confusing }}</textarea>
+        </label>
+
+        <label>
+          <span>What felt missing?</span>
+          <textarea name="missing" rows="3" placeholder="A filter, explanation, button, name type, or next step...">{{ form_data.missing }}</textarea>
+        </label>
+
+        <label>
+          <span>Did anything break?</span>
+          <textarea name="bug" rows="3" placeholder="What happened, and what device/browser were you using?">{{ form_data.bug }}</textarea>
+        </label>
+
+        <label>
+          <span>Anything else?</span>
+          <textarea name="other_notes" rows="3" placeholder="Tiny details welcome.">{{ form_data.other_notes }}</textarea>
+        </label>
+
+        <div class="loading-wrap">
+          <button type="submit">Send feedback</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    const pageUrl = document.querySelector('input[name="page_url"]');
+    if (pageUrl && !pageUrl.value) {
+      pageUrl.value = document.referrer || window.location.href;
+    }
+  </script>
+</body>
+</html>

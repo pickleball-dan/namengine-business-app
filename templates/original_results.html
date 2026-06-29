@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ meta_title or 'Original business names | NamEngine Business' }}</title>
+  <meta name="description" content="{{ meta_description or 'Original business names created by NamEngine Business and ready to share.' }}">
+  <meta property="og:title" content="{{ meta_title or 'Original business names | NamEngine Business' }}">
+  <meta property="og:description" content="{{ meta_description or 'Original business names created by NamEngine Business and ready to share.' }}">
+  <meta property="og:image" content="{{ meta_image }}">
+  <meta property="og:image:width" content="{{ meta_image_width }}">
+  <meta property="og:image:height" content="{{ meta_image_height }}">
+  <meta property="og:image:type" content="{{ meta_image_type }}">
+  <meta property="og:url" content="{{ share_url or request.url }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="NamEngine Business">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ meta_title or 'Original business names | NamEngine Business' }}">
+  <meta name="twitter:description" content="{{ meta_description or 'Original business names created by NamEngine Business and ready to share.' }}">
+  <meta name="twitter:image" content="{{ meta_image }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <main class="shell results-shell">
+    <section class="hero-card original-hero-card original-hero-wide-title original-results-hero">
+      <img class="logo-lockup" src="{{ url_for('static', filename='images/namengine-business-logo.png') }}" alt="NamEngine Business logo">
+      <p class="eyebrow">Original Business Name Studio</p>
+      <h1>Here are original business names created for your taste.</h1>
+      <div class="results-header-links">
+        <a class="button-link secondary-button" href="{{ brief_link }}">Refine taste</a>
+        <a class="button-link tertiary-button" href="/">Back to business names</a>
+      </div>
+      <div class="summary-card original-summary-card original-summary-strip">
+        <div class="original-summary-content">
+          <p class="summary-chip">{{ original_summary }}</p>
+          <div class="tune-pill-row">
+            {% for tune in tune_chips %}
+            <span class="tune-pill">{{ tune }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <details class="process-disclosure compact-disclosure">
+        <summary>How we work with you</summary>
+        <div class="process-body">
+          <article>
+            <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/><path d="M8 6v0"/><path d="M15 12v0"/><path d="M11 18v0"/></svg></span>
+            <div class="process-copy">
+              <h2>You set the direction.</h2>
+              <p>Tell NamEngine what you want the names to feel like: softer, more classic, more modern, or more distinctive.</p>
+            </div>
+          </article>
+          <article>
+            <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/><path d="m5.6 5.6 2.1 2.1"/><path d="m16.3 16.3 2.1 2.1"/><path d="m18.4 5.6-2.1 2.1"/><path d="m7.7 16.3-2.1 2.1"/><path d="M12 9l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2Z"/></svg></span>
+            <div class="process-copy">
+              <h2>We invent around your taste.</h2>
+              <p>Each name is created by NamEngine and tuned to the style you described, instead of pulled from a standard business-name list.</p>
+            </div>
+          </article>
+          <article>
+            <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 12h8"/><path d="M12 8v8"/><path d="M4 4h16v16H4z"/></svg></span>
+            <div class="process-copy">
+              <h2>We screen for rarity.</h2>
+              <p>Names are checked against known name lists so the results feel original, not accidentally common. Absolute global uniqueness cannot be guaranteed.</p>
+            </div>
+          </article>
+          <article>
+            <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 20 4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10L4 20Z"/><path d="m13.5 6.5 4 4"/></svg></span>
+            <div class="process-copy">
+              <h2>You can keep nudging.</h2>
+              <p>If the first set is close but not quite right, adjust the feel instead of starting over.</p>
+            </div>
+          </article>
+          <article>
+            <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/></svg></span>
+            <div class="process-copy">
+              <h2>Your taste stays private.</h2>
+              <p>We use your naming notes to shape your list. You decide if and when to share it.</p>
+            </div>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <form action="{{ url_for('original_results') }}" method="post" class="original-results-form js-loading-form" data-loading-text="Re-shaping your original business names...">
+      {% for key, value in form_data.items() %}
+      <input type="hidden" name="{{ key }}" value="{{ value }}">
+      {% endfor %}
+      <input type="hidden" name="previous_names" value="{{ previous_names|join('||') }}">
+      <input type="hidden" name="tune_history" value="{{ tune_history|join('||') }}">
+
+      <section class="results-grid original-results-grid">
+        {% for item in names %}
+        <article class="name-card original-name-card {% if item.highlight %}featured-card{% endif %}">
+          <div class="name-top">
+            <div>
+              <p class="card-kicker">{{ item.rank_label }}</p>
+              <h2>{{ item.name }}</h2>
+              <p class="pronunciation">/{{ item.pronunciation }}/</p>
+            </div>
+            {% if item.highlight %}
+            <span class="card-badge">Strong match</span>
+            {% endif %}
+          </div>
+          {% if item.emotional_opener %}
+          <p class="emotional-opener">{{ item.emotional_opener }}</p>
+          {% endif %}
+          <div class="detail-row">
+            <p><strong>Feel</strong><span>{{ item.style }}</span></p>
+            <p><strong>Structure</strong><span>{{ item.structure }}</span></p>
+          </div>
+          <p class="why">{{ item.why }}</p>
+          {% if can_react %}
+          <div class="reaction-block">
+            <p class="reaction-feedback" aria-live="polite"></p>
+            <div class="reaction-options">
+              {% for option in reaction_options %}
+              <label class="reaction-pill reaction-pill-{{ option.value }} {% if reactions.get(item.slug) == option.value %}is-selected{% endif %}" data-feedback="{{ option.hover_text }}">
+                <input type="radio" name="reaction__{{ item.slug }}" value="{{ option.value }}" aria-label="{{ option.label }}" {% if reactions.get(item.slug) == option.value %}checked{% endif %}>
+                <span class="reaction-choice">
+                  <img class="reaction-image" src="{{ url_for('static', filename=option.image) }}" alt="" aria-hidden="true">
+                  <span class="reaction-text">{{ option.label }}</span>
+                </span>
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+          <details class="fit-preview">
+            <summary>Why this name?</summary>
+            <div class="fit-bubble originality-bubble">
+              <p>{{ item.fit_note }}</p>
+              <p><strong>Originality screen</strong></p>
+              <p>{{ item.originality_note }}</p>
+            </div>
+          </details>
+        </article>
+        {% endfor %}
+      </section>
+
+      <section class="share-panel original-control-panel">
+        <div>
+          {% if can_react %}
+          <h2>React, then make the next set feel closer.</h2>
+          <p class="progress-note prominent-progress js-reaction-progress">
+            <span class="js-reaction-progress-label">0 of {{ names|length }} reactions</span>
+            <span class="reaction-progress-track" aria-hidden="true">
+              <span class="js-reaction-progress-fill"></span>
+            </span>
+          </p>
+          {% else %}
+          <h2>Make the next set feel closer.</h2>
+          {% endif %}
+        </div>
+        <div class="share-actions">
+          <div class="inline-form original-tune-form">
+            <div class="tune-grid">
+              {% for option in tune_options %}
+              <button type="submit" name="tune_direction" value="{{ option.value }}" class="button-link secondary-button tune-button">{{ option.label }}</button>
+              {% endfor %}
+            </div>
+            <p class="loading-note js-loading-note" aria-live="polite">Re-shaping your original business names...</p>
+          </div>
+        </div>
+      </section>
+    </form>
+
+    <section class="share-panel original-action-panel">
+      <div class="share-actions original-action-row">
+        <button type="button" class="button-link js-share-trigger" data-share-url="{{ share_url }}" data-share-message="{{ share_message }}">
+          Share original business names
+        </button>
+        <a class="button-link secondary-button" href="{{ brief_link }}">Refine taste</a>
+        <a class="button-link secondary-button" href="{{ url_for('original_name') }}#original-brief">Start fresh</a>
+        {% if feedback_enabled %}
+        <a class="button-link tertiary-button" href="{{ url_for('feedback') }}">Give feedback</a>
+        {% endif %}
+      </div>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='taste-history.js') }}"></script>
+  <script>
+    if (window.NamEngineTasteHistory) {
+      window.NamEngineTasteHistory.trackLovedNames({
+        mode: 'Original',
+        summary: {{ original_summary|tojson }},
+        shareUrl: {{ share_url|tojson }},
+      });
+    }
+
+    document.querySelectorAll('.js-loading-form').forEach((form) => {
+      form.addEventListener('submit', () => {
+        const buttons = form.querySelectorAll('button');
+        const note = form.querySelector('.js-loading-note');
+        buttons.forEach((button) => {
+          button.disabled = true;
+        });
+        if (note) {
+          note.classList.add('is-visible');
+        }
+      });
+    });
+
+    document.querySelectorAll('.original-results-form').forEach((form) => {
+      const progressLabel = form.querySelector('.js-reaction-progress-label');
+      const progressFill = form.querySelector('.js-reaction-progress-fill');
+      const cards = Array.from(form.querySelectorAll('.name-card'));
+      const feedbackTimers = new WeakMap();
+
+      const showReactionFeedback = (pill) => {
+        const card = pill.closest('.name-card');
+        const feedback = card ? card.querySelector('.reaction-feedback') : null;
+        if (!feedback) {
+          return;
+        }
+
+        const timer = feedbackTimers.get(feedback);
+        if (timer) {
+          clearTimeout(timer);
+        }
+
+        feedback.textContent = pill.dataset.feedback || '';
+        feedback.classList.add('is-visible');
+        feedbackTimers.set(feedback, setTimeout(() => {
+          feedback.classList.remove('is-visible');
+        }, 3000));
+      };
+
+      const refresh = () => {
+        let selected = 0;
+        cards.forEach((card) => {
+          const chosen = card.querySelector('input[type="radio"]:checked');
+          card.querySelectorAll('.reaction-pill').forEach((pill) => {
+            const input = pill.querySelector('input');
+            pill.classList.toggle('is-selected', input.checked);
+          });
+          if (chosen) {
+            selected += 1;
+          }
+        });
+
+        if (progressLabel) {
+          progressLabel.textContent = `${selected} of ${cards.length} reactions`;
+        }
+        if (progressFill) {
+          const fillPercent = cards.length ? (selected / cards.length) * 100 : 0;
+          progressFill.style.width = `${fillPercent}%`;
+        }
+      };
+
+      form.addEventListener('change', (event) => {
+        if (event.target.matches('input[type="radio"]')) {
+          const pill = event.target.closest('.reaction-pill');
+          refresh();
+          if (pill) {
+            showReactionFeedback(pill);
+          }
+        }
+      });
+
+      refresh();
+    });
+
+    const absoluteShareUrl = (path) => new URL(path, window.location.origin).toString();
+
+    document.querySelectorAll('.share-actions').forEach((actions) => {
+      if (navigator.share) {
+        actions.classList.add('is-native');
+      }
+    });
+
+    document.querySelectorAll('.js-share-trigger').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const path = button.dataset.shareUrl;
+        const text = button.dataset.shareMessage;
+        const feedback = document.querySelector('.js-share-feedback');
+        const shareUrl = absoluteShareUrl(path);
+
+        try {
+          if (navigator.share) {
+            await navigator.share({
+              title: 'My NamEngine Business original names',
+              text,
+              url: shareUrl,
+            });
+            if (feedback) {
+              feedback.textContent = 'Shared.';
+              feedback.classList.add('is-visible');
+            }
+            return;
+          }
+
+          await navigator.clipboard.writeText(shareUrl);
+          if (feedback) {
+            feedback.textContent = 'Share link copied.';
+            feedback.classList.add('is-visible');
+          }
+        } catch (error) {
+          if (feedback) {
+            feedback.textContent = 'Share cancelled.';
+            feedback.classList.add('is-visible');
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Feedback responses | NamEngine Business</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <main class="shell results-shell">
+    <section class="results-header results-header-grid">
+      <div>
+        <img class="logo-lockup small-logo" src="{{ url_for('static', filename='images/namengine-business-logo.png') }}" alt="NamEngine Business logo">
+        <p class="eyebrow">Beta feedback</p>
+        <h1>Tester responses.</h1>
+      </div>
+      <aside class="summary-card compact-summary-card">
+        <p class="panel-label">Total entries</p>
+        <p class="summary-chip">{{ entries|length }}</p>
+        <p class="summary-note">Newest feedback appears first.</p>
+      </aside>
+    </section>
+
+    {% if entries %}
+    <section class="feedback-response-list">
+      {% for entry in entries %}
+      <article class="detail-card feedback-response-card">
+        <div class="feedback-response-top">
+          <div>
+            <p class="panel-label">{{ entry.created_at }}</p>
+            <h2>{{ entry.name or 'Anonymous tester' }}</h2>
+            {% if entry.email %}
+            <p class="summary-note">{{ entry.email }}</p>
+            {% endif %}
+          </div>
+          <div class="feedback-chip-row">
+            {% if entry.tester_type %}<span class="tune-pill">{{ entry.tester_type }}</span>{% endif %}
+            {% if entry.overall_rating %}<span class="tune-pill">{{ entry.overall_rating }}</span>{% endif %}
+            {% if entry.would_share %}<span class="tune-pill">Share: {{ entry.would_share }}</span>{% endif %}
+          </div>
+        </div>
+
+        <div class="brief-grid">
+          {% for key, label in {
+            'liked_most': 'Liked most',
+            'confusing': 'Confusing or awkward',
+            'missing': 'Missing',
+            'bug': 'Breakage',
+            'other_notes': 'Other notes',
+            'page_url': 'Page URL'
+          }.items() %}
+          {% if entry.get(key) %}
+          <article class="brief-item">
+            <p class="panel-label">{{ label }}</p>
+            <p>{{ entry.get(key) }}</p>
+          </article>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </article>
+      {% endfor %}
+    </section>
+    {% else %}
+    <section class="detail-card">
+      <p class="summary-note">No feedback yet.</p>
+    </section>
+    {% endif %}
+  </main>
+</body>
+</html>

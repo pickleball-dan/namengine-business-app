@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create an original business name | NamEngine Business</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <main class="shell home-shell">
+    <section class="hero-card original-hero-card original-hero-wide-title">
+      <div>
+        {% if feedback_enabled %}
+        <div class="home-utility-actions">
+          <a class="feedback-mini-link" href="{{ url_for('feedback') }}">Give beta feedback</a>
+        </div>
+        {% endif %}
+        <img class="logo-lockup" src="{{ url_for('static', filename='images/namengine-business-logo.png') }}" alt="NamEngine Business logo">
+        <p class="eyebrow">Original Business Name Studio</p>
+        <h1>Create a business name that feels built for your idea.</h1>
+        <div class="hero-actions dual-actions">
+          <a class="button-link" href="#original-brief">Start creating</a>
+          <a class="button-link secondary-button" href="/">Back to business names</a>
+        </div>
+        <details class="process-disclosure">
+          <summary>How we work with you</summary>
+          <div class="process-body">
+            <article>
+              <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.8 4.6c-1.6-1.6-4.1-1.5-5.7.1L12 7.8 8.9 4.7C7.3 3.1 4.8 3 3.2 4.6 1.5 6.3 1.6 9 3.3 10.7L12 19.4l8.7-8.7c1.7-1.7 1.8-4.4.1-6.1Z"/></svg></span>
+              <div class="process-copy">
+                <h2>We start with what you love.</h2>
+                <p>Every unforgettable business name begins with a feeling. NamEngine learns the sounds, styles, and personality cues you are drawn to.</p>
+              </div>
+            </article>
+            <article>
+              <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/><path d="M8 6v0"/><path d="M15 12v0"/><path d="M11 18v0"/></svg></span>
+              <div class="process-copy">
+                <h2>You set the direction.</h2>
+                <p>Tell NamEngine what you want the names to feel like: cuter, cooler, calmer, bolder, or more distinctive.</p>
+              </div>
+            </article>
+            <article>
+              <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/><path d="m5.6 5.6 2.1 2.1"/><path d="m16.3 16.3 2.1 2.1"/><path d="m18.4 5.6-2.1 2.1"/><path d="m7.7 16.3-2.1 2.1"/><path d="M12 9l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2Z"/></svg></span>
+              <div class="process-copy">
+                <h2>We invent around your taste.</h2>
+                <p>Each name is created by NamEngine and tuned to the style you described, instead of pulled from a standard business-name list.</p>
+              </div>
+            </article>
+            <article>
+              <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 20 4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10L4 20Z"/><path d="m13.5 6.5 4 4"/></svg></span>
+              <div class="process-copy">
+                <h2>You can keep nudging.</h2>
+                <p>If the first set is close but not quite right, tune it softer, more classic, more modern, or more distinctive.</p>
+              </div>
+            </article>
+            <article>
+              <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 12h8"/><path d="M12 8v8"/><path d="M4 4h16v16H4z"/></svg></span>
+              <div class="process-copy">
+                <h2>We screen for rarity.</h2>
+                <p>Names are checked against known name lists so the results feel original, not accidentally common. Absolute global uniqueness cannot be guaranteed.</p>
+              </div>
+            </article>
+            <article>
+              <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/></svg></span>
+              <div class="process-copy">
+                <h2>Your taste stays private.</h2>
+                <p>We use your naming notes to shape your list. You decide if and when to share it.</p>
+              </div>
+            </article>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="form-card" id="original-brief">
+      <div class="section-heading">
+        <h2>What are we naming?</h2>
+      </div>
+
+      <form action="{{ url_for('original_results') }}" method="post" class="intake-form js-loading-form" data-loading-text="Creating your original business names...">
+        <div class="grid two-up">
+          <label>
+            <span>Discovery style</span>
+            <div class="select-wrap tinted-select tinted-amber">
+              <select name="discovery_style">
+                <option value="" {% if not form_data.discovery_style %}selected{% endif %}>Choose</option>
+                {% for option in discovery_style_options %}
+                <option {% if form_data.discovery_style == option %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </label>
+
+          <label>
+            <span>What are you naming?</span>
+            <div class="select-wrap tinted-select tinted-aqua">
+              <select name="pet_type">
+                <option value="" {% if not form_data.pet_type %}selected{% endif %}>Choose</option>
+                <option {% if form_data.pet_type == 'Business' %}selected{% endif %}>Business</option>
+                <option {% if form_data.pet_type == 'Startup' %}selected{% endif %}>Startup</option>
+                <option {% if form_data.pet_type == 'Product' %}selected{% endif %}>Product</option>
+                <option {% if form_data.pet_type == 'App / software' %}selected{% endif %}>App / software</option>
+                <option {% if form_data.pet_type == 'Studio / agency' %}selected{% endif %}>Studio / agency</option>
+                <option {% if form_data.pet_type == 'Local service' %}selected{% endif %}>Local service</option>
+                <option {% if form_data.pet_type == 'Nonprofit' %}selected{% endif %}>Nonprofit</option>
+                <option {% if form_data.pet_type == 'Newsletter / media' %}selected{% endif %}>Newsletter / media</option>
+                <option {% if form_data.pet_type == 'Other' %}selected{% endif %}>Other</option>
+              </select>
+            </div>
+          </label>
+        </div>
+
+        <div class="grid two-up">
+          <label>
+            <span>Core style</span>
+            <div class="select-wrap tinted-select tinted-lilac">
+              <select name="style">
+                <option value="" {% if not form_data.style %}selected{% endif %}>Choose</option>
+                <option {% if form_data.style == 'Classic' %}selected{% endif %}>Classic</option>
+                <option {% if form_data.style == 'Modern' %}selected{% endif %}>Modern</option>
+                <option {% if form_data.style == 'Soft and romantic' %}selected{% endif %}>Soft and romantic</option>
+                <option {% if form_data.style == 'Strong and tailored' %}selected{% endif %}>Strong and tailored</option>
+                <option {% if form_data.style == 'Uncommon but usable' %}selected{% endif %}>Uncommon but usable</option>
+              </select>
+            </div>
+          </label>
+
+          <label>
+            <span>What should the name signal?</span>
+            <div class="select-wrap tinted-select tinted-sky">
+              <select name="vibe">
+                <option value="" {% if not form_data.vibe %}selected{% endif %}>Choose</option>
+                <option {% if form_data.vibe == 'Trustworthy' %}selected{% endif %}>Trustworthy</option>
+                <option {% if form_data.vibe == 'Premium' %}selected{% endif %}>Premium</option>
+                <option {% if form_data.vibe == 'Playful' %}selected{% endif %}>Playful</option>
+                <option {% if form_data.vibe == 'Bold' %}selected{% endif %}>Bold</option>
+                <option {% if form_data.vibe == 'Technical' %}selected{% endif %}>Technical</option>
+                <option {% if form_data.vibe == 'Creative' %}selected{% endif %}>Creative</option>
+                <option {% if form_data.vibe == 'Local' %}selected{% endif %}>Local</option>
+                <option {% if form_data.vibe == 'Modern' %}selected{% endif %}>Modern</option>
+                <option {% if form_data.vibe == 'Human' %}selected{% endif %}>Human</option>
+                <option {% if form_data.vibe == 'Expert' %}selected{% endif %}>Expert</option>
+              </select>
+            </div>
+          </label>
+        </div>
+
+        <div class="grid two-up">
+          <label>
+            <span>How familiar should it feel?</span>
+            <div class="select-wrap tinted-select tinted-rose">
+              <select name="familiarity_preference">
+                <option value="" {% if not form_data.familiarity_preference %}selected{% endif %}>Choose</option>
+                <option {% if form_data.familiarity_preference == 'Very familiar and easy' %}selected{% endif %}>Very familiar and easy</option>
+                <option {% if form_data.familiarity_preference == 'Recognizable but not overused' %}selected{% endif %}>Recognizable but not overused</option>
+                <option {% if form_data.familiarity_preference == 'A little less common' %}selected{% endif %}>A little less common</option>
+                <option {% if form_data.familiarity_preference == 'Memorable and rarer' %}selected{% endif %}>Memorable and rarer</option>
+              </select>
+            </div>
+          </label>
+
+          <label>
+            <span>How easy should it be to say and remember?</span>
+            <div class="select-wrap tinted-select tinted-mint">
+              <select name="pronunciation_importance">
+                <option value="" {% if not form_data.pronunciation_importance %}selected{% endif %}>Choose</option>
+                <option {% if form_data.pronunciation_importance == 'Very important' %}selected{% endif %}>Very important</option>
+                <option {% if form_data.pronunciation_importance == 'Helpful but not absolute' %}selected{% endif %}>Helpful but not absolute</option>
+                <option {% if form_data.pronunciation_importance == 'Open to slight friction' %}selected{% endif %}>Open to slight friction</option>
+              </select>
+            </div>
+          </label>
+        </div>
+
+        <div class="grid two-up">
+          <label>
+          <span>Letter to begin the name</span>
+            <input type="text" name="starting_letter" value="{{ form_data.starting_letter }}" maxlength="2" placeholder="A, E, L...">
+          </label>
+
+          <label>
+            <span>Length preference</span>
+            <div class="select-wrap tinted-select tinted-aqua">
+              <select name="length_preference">
+                <option value="" {% if not form_data.length_preference %}selected{% endif %}>Choose</option>
+                <option {% if form_data.length_preference == 'Short and crisp' %}selected{% endif %}>Short and crisp</option>
+                <option {% if form_data.length_preference == 'Balanced 2 syllables' %}selected{% endif %}>Balanced 2 syllables</option>
+                <option {% if form_data.length_preference == 'Flowing 3 syllables' %}selected{% endif %}>Flowing 3 syllables</option>
+                <option {% if form_data.length_preference == 'Open to either' %}selected{% endif %}>Open to either</option>
+              </select>
+            </div>
+          </label>
+        </div>
+
+        <label>
+          <span>Naming direction</span>
+          <div class="select-wrap tinted-select tinted-mint">
+            <select name="cultural_context">
+              <option value="" {% if not form_data.cultural_context %}selected{% endif %}>No preference</option>
+              {% for option in cultural_feel_options %}
+              <option {% if form_data.cultural_context == option %}selected{% endif %}>{{ option }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </label>
+
+        <label>
+          <span>What should the name avoid feeling like?</span>
+          <input type="text" name="avoid_feel" value="{{ form_data.avoid_feel }}" placeholder="Too trendy, fantasy-ish, overly soft, hard to say...">
+        </label>
+
+        <label>
+          <span>Tell us about the business</span>
+          <textarea name="notes" rows="3" placeholder="Industry, audience, offer, tone, competitors to avoid, words you like...">{{ form_data.notes }}</textarea>
+        </label>
+
+        <div class="loading-wrap">
+          <button type="submit" class="js-loading-button">Create original business names</button>
+          <p class="loading-note js-loading-note" aria-live="polite">Crafting business names that fit your taste...</p>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    document.querySelectorAll('.js-loading-form').forEach((form) => {
+      form.addEventListener('submit', () => {
+        const button = form.querySelector('.js-loading-button');
+        const note = form.querySelector('.js-loading-note');
+        if (button) {
+          button.dataset.originalText = button.textContent;
+          button.textContent = form.dataset.loadingText || 'Working...';
+          button.disabled = true;
+        }
+        if (note) {
+          note.classList.add('is-visible');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

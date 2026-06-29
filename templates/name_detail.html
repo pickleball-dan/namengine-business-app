@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ name.name }} | NamEngine Business</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <main class="shell detail-shell">
+    <section class="detail-hero hero-card detail-grid">
+      <div>
+        <img class="logo-lockup small-logo" src="{{ url_for('static', filename='images/namengine-business-logo.png') }}" alt="NamEngine Business logo">
+        <p class="eyebrow">{{ round_label }} · Name detail</p>
+        <h1>{{ name.name }}</h1>
+        <p class="pronunciation detail-pronunciation">/{{ name.pronunciation }}/</p>
+        {% if detail_profile.first_impression %}
+        <p class="detail-first-impression">{{ detail_profile.first_impression }}</p>
+        {% endif %}
+        <div class="detail-actions">
+          <a class="button-link secondary-button" href="{{ refine_link }}">Refine taste</a>
+          <a class="button-link tertiary-button" href="{{ start_over_link }}">Start over</a>
+          <a href="{{ url_for('results') }}?shortlist={{ shortlist_id }}" class="button-link tertiary-button">Back to list</a>
+        </div>
+      </div>
+      <aside class="summary-card compact-summary-card">
+        <p class="panel-label">Selected feeling</p>
+        <p class="summary-chip">{{ preference_summary }}</p>
+        <p class="summary-note">{{ name.fit_note }}</p>
+      </aside>
+    </section>
+
+    <section class="detail-columns premium-detail-columns">
+      <article class="detail-card">
+        <p class="panel-label">Personality</p>
+        <div class="personality-chip-row">
+          {% for trait in detail_profile.personality %}
+          <span class="personality-chip">{{ trait }}</span>
+          {% endfor %}
+        </div>
+        <p class="why">{{ name.fit_note }}</p>
+      </article>
+
+      <article class="detail-card">
+        <p class="panel-label">Sound</p>
+        <h2>{{ detail_profile.sound }}</h2>
+        <p class="why">{{ name.pairing_note }}</p>
+      </article>
+    </section>
+
+    <section class="detail-columns premium-detail-columns">
+      <article class="detail-card">
+        <p class="panel-label">Essentials</p>
+        <div class="detail-row">
+          <p><strong>Origin</strong><span>{{ name.origin }}</span></p>
+          <p><strong>Meaning</strong><span>{{ name.meaning }}</span></p>
+          <p><strong>Style</strong><span>{{ name.style }}</span></p>
+          <p><strong>Pronunciation</strong><span>{{ name.pronunciation }}</span></p>
+        </div>
+      </article>
+
+      <article class="detail-card">
+        <p class="panel-label">Why this fits your taste</p>
+        <p class="why">{{ detail_profile.why_taste }}</p>
+      </article>
+    </section>
+
+    <section class="detail-card related-card">
+      <div class="section-heading tight-heading">
+        <h2>Similar feeling.</h2>
+      </div>
+      <div class="detail-suggestion-columns">
+        <div>
+          <p class="panel-label">Fits people who like</p>
+          <div class="name-pill-row">
+            {% for item_name in detail_profile.fits_parents_who_like %}
+            <span class="name-pill">{{ item_name }}</span>
+            {% endfor %}
+          </div>
+        </div>
+        <div>
+          <p class="panel-label">Nearby names</p>
+          <div class="name-pill-row">
+            {% for item_name in detail_profile.similar_feeling %}
+            <span class="name-pill">{{ item_name }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <div class="results-grid compact-grid related-result-grid">
+        {% for item in names if item.slug != name.slug %}
+        <article class="name-card mini-result-card">
+          <div class="name-top">
+            <div>
+              <p class="card-kicker">{{ item.rank_label }}</p>
+              <h2>{{ item.name }}</h2>
+            </div>
+          </div>
+          <p class="why">{{ item.why }}</p>
+          <a href="{{ url_for('name_detail', slug=item.slug) }}?shortlist={{ shortlist_id }}" class="button-link tertiary-button detail-link">Open detail</a>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+</body>
+</html>
