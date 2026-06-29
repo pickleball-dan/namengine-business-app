@@ -1955,3 +1955,19 @@ textarea { resize: vertical; }
 }
 
 
+
+.platform-home-link {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin: -6px 0 16px;
+  color: var(--accent-deep);
+  font-size: 0.84rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.platform-home-link:hover {
+  color: var(--accent);
+}

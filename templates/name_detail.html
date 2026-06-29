@@ -14,6 +14,7 @@
     <section class="detail-hero hero-card detail-grid">
       <div>
         <img class="logo-lockup small-logo" src="{{ url_for('static', filename='images/namengine-business-logo.png') }}" alt="NamEngine Business logo">
+        <a class="platform-home-link" href="{{ platform_home_url }}">NamEngine+</a>
         <p class="eyebrow">{{ round_label }} · Name detail</p>
         <h1>{{ name.name }}</h1>
         <p class="pronunciation detail-pronunciation">/{{ name.pronunciation }}/</p>
@@ -108,3 +109,4 @@
   </main>
 </body>
 </html>
+
