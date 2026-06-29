@@ -50,15 +50,15 @@
             <article>
               <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.8 4.6c-1.6-1.6-4.1-1.5-5.7.1L12 7.8 8.9 4.7C7.3 3.1 4.8 3 3.2 4.6 1.5 6.3 1.6 9 3.3 10.7L12 19.4l8.7-8.7c1.7-1.7 1.8-4.4.1-6.1Z"/></svg></span>
               <div class="process-copy">
-                <h2>We start with what you love.</h2>
-                <p>NamEngine learns the sounds, styles, origins, meanings, and popularity range you are drawn to.</p>
+                <h2>We learn the business first.</h2>
+                <p>NamEngine starts with what you are naming, who it is for, and the market signals the name needs to carry.</p>
               </div>
             </article>
             <article>
               <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/><path d="M8 6v0"/><path d="M15 12v0"/><path d="M11 18v0"/></svg></span>
               <div class="process-copy">
-                <h2>We balance the list.</h2>
-                <p>Your list blends familiar options, fresh discoveries, and names that fit the feeling you described.</p>
+                <h2>Then we learn your taste.</h2>
+                <p>Your list blends business context with the sounds, styles, and discovery range you naturally respond to.</p>
               </div>
             </article>
             <article>
@@ -95,19 +95,8 @@
       <form action="/results" method="post" class="intake-form js-loading-form {% if live_brief_enabled %}js-brief-builder-form{% endif %}" data-loading-text="Gathering your list...">
         <div class="brief-builder-layout {% if live_brief_enabled %}has-live-brief{% endif %}">
           <div class="brief-builder-fields">
+            <p class="form-section-label">Tell us about your business</p>
             <div class="grid two-up">
-              <label>
-                <span>Discovery style</span>
-                <div class="select-wrap tinted-select tinted-amber">
-                  <select name="discovery_style" data-brief-label="Discovery">
-                    <option value="" {% if not form_data.discovery_style %}selected{% endif %}>Choose</option>
-                    {% for option in discovery_style_options %}
-                    <option {% if form_data.discovery_style == option %}selected{% endif %}>{{ option }}</option>
-                    {% endfor %}
-                  </select>
-                </div>
-              </label>
-
               <label>
                 <span>What are you naming?</span>
                 <div class="select-wrap tinted-select tinted-aqua">
@@ -125,19 +114,49 @@
                   </select>
                 </div>
               </label>
+
+              <label>
+                <span>Industry</span>
+                <div class="select-wrap tinted-select tinted-amber">
+                  <select name="industry" data-brief-label="Industry">
+                    <option value="" {% if not form_data.industry %}selected{% endif %}>Choose</option>
+                    {% for option in industry_options %}
+                    <option {% if form_data.industry == option %}selected{% endif %}>{{ option }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </label>
             </div>
 
+            <label>
+              <span>What does the business do?</span>
+              <textarea name="business_description" rows="2" placeholder="Temporary staffing for hotels, events, and local employers..." data-brief-label="Business" data-brief-short="true">{{ form_data.business_description }}</textarea>
+            </label>
+
+            <label>
+              <span>Who is it for?</span>
+              <input type="text" name="target_audience" value="{{ form_data.target_audience }}" placeholder="Busy operators who need reliable short-notice coverage..." data-brief-label="Audience" data-brief-short="true">
+            </label>
+
+            <label>
+              <span>Anything the name should avoid?</span>
+              <input type="text" name="avoid_feel" value="{{ form_data.avoid_feel }}" placeholder="Gig-app, cheap, overly corporate, hard to say, too abstract..." data-brief-label="Avoid" data-brief-short="true">
+            </label>
+
+            <p class="form-section-label">Now shape the taste</p>
             <div class="grid two-up">
               <label>
-                <span>What overall brand style feels closest?</span>
+                <span>What kind of names do you naturally respond to?</span>
                 <div class="select-wrap tinted-select tinted-lilac">
                   <select name="style" data-brief-label="Style">
                     <option value="" {% if not form_data.style %}selected{% endif %}>Choose</option>
-                    <option {% if form_data.style == 'Classic' %}selected{% endif %}>Classic</option>
+                    <option {% if form_data.style == 'Timeless' %}selected{% endif %}>Timeless</option>
                     <option {% if form_data.style == 'Modern' %}selected{% endif %}>Modern</option>
-                    <option {% if form_data.style == 'Soft and romantic' %}selected{% endif %}>Soft and romantic</option>
-                    <option {% if form_data.style == 'Strong and tailored' %}selected{% endif %}>Strong and tailored</option>
-                    <option {% if form_data.style == 'Uncommon but usable' %}selected{% endif %}>Uncommon but usable</option>
+                    <option {% if form_data.style == 'Professional' %}selected{% endif %}>Professional</option>
+                    <option {% if form_data.style == 'Friendly' %}selected{% endif %}>Friendly</option>
+                    <option {% if form_data.style == 'Innovative' %}selected{% endif %}>Innovative</option>
+                    <option {% if form_data.style == 'Elegant' %}selected{% endif %}>Elegant</option>
+                    <option {% if form_data.style == 'Bold' %}selected{% endif %}>Bold</option>
                   </select>
                 </div>
               </label>
@@ -158,6 +177,18 @@
             </div>
 
             <div class="grid two-up">
+              <label>
+                <span>Market feel</span>
+                <div class="select-wrap tinted-select tinted-rose">
+                  <select name="market_position" data-brief-label="Market feel">
+                    <option value="" {% if not form_data.market_position %}selected{% endif %}>Choose</option>
+                    {% for option in market_position_options %}
+                    <option {% if form_data.market_position == option %}selected{% endif %}>{{ option }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </label>
+
               <label>
                 <span>How familiar should the name feel?</span>
                 <div class="select-wrap tinted-select tinted-rose">
@@ -205,12 +236,12 @@
               </label>
 
               <label>
-                <span>Naming direction</span>
-                <div class="select-wrap tinted-select tinted-mint">
-                  <select name="cultural_context" data-brief-label="Direction">
-                    <option value="" {% if not form_data.cultural_context %}selected{% endif %}>No preference</option>
-                    {% for option in cultural_feel_options %}
-                    <option {% if form_data.cultural_context == option %}selected{% endif %}>{{ option }}</option>
+                <span>Discovery style</span>
+                <div class="select-wrap tinted-select tinted-amber">
+                  <select name="discovery_style" data-brief-label="Discovery">
+                    <option value="" {% if not form_data.discovery_style %}selected{% endif %}>Choose</option>
+                    {% for option in discovery_style_options %}
+                    <option {% if form_data.discovery_style == option %}selected{% endif %}>{{ option }}</option>
                     {% endfor %}
                   </select>
                 </div>
@@ -218,13 +249,25 @@
             </div>
 
             <label>
-              <span>Anything you're torn between?</span>
-              <input type="text" name="partner_alignment" value="{{ form_data.partner_alignment }}" placeholder="Cute or serious, silly or elegant, descriptive or abstract, everyone else's opinions..." data-brief-label="Taste notes" data-brief-short="true">
+              <span>Naming direction</span>
+              <div class="select-wrap tinted-select tinted-mint">
+                <select name="cultural_context" data-brief-label="Direction">
+                  <option value="" {% if not form_data.cultural_context %}selected{% endif %}>No preference</option>
+                  {% for option in cultural_feel_options %}
+                  <option {% if form_data.cultural_context == option %}selected{% endif %}>{{ option }}</option>
+                  {% endfor %}
+                </select>
+              </div>
             </label>
 
             <label>
-              <span>Tell us about the business</span>
-              <textarea name="notes" rows="3" placeholder="Industry, audience, offer, tone, competitors to avoid, words you like..." data-brief-label="Business notes" data-brief-short="true">{{ form_data.notes }}</textarea>
+              <span>Any extra taste notes?</span>
+              <input type="text" name="partner_alignment" value="{{ form_data.partner_alignment }}" placeholder="Polished but not cold, modern but still trusted, descriptive but not boring..." data-brief-label="Taste notes" data-brief-short="true">
+            </label>
+
+            <label>
+              <span>Anything else we should know?</span>
+              <textarea name="notes" rows="3" placeholder="Competitors, words you like, location, future plans, or extra context..." data-brief-label="Context notes" data-brief-short="true">{{ form_data.notes }}</textarea>
             </label>
 
             <div class="loading-wrap">
@@ -277,7 +320,7 @@
   {% if live_brief_enabled %}
   <button type="button" class="live-brief-mobile-tab js-live-brief-mobile-tab" aria-controls="live-brief-panel" aria-label="Review your taste" hidden>
     <span>Taste</span>
-    <small class="js-taste-tab-count">0/8</small>
+    <small class="js-taste-tab-count">0/15</small>
   </button>
   {% endif %}
 
@@ -352,14 +395,14 @@
 
         const selectedCount = items.length;
         const activeLabel = strengthLabels.find((entry) => selectedCount >= entry.min)?.label || 'Light taste';
-        const progress = Math.min(100, Math.max(8, (selectedCount / 8) * 100));
+        const progress = Math.min(100, Math.max(8, (selectedCount / fields.length) * 100));
         strength.textContent = activeLabel;
         fill.style.width = `${progress}%`;
         if (liveBriefButton) {
           liveBriefButton.style.setProperty('--taste-progress', `${progress}%`);
         }
         if (liveBriefButtonCount) {
-          liveBriefButtonCount.textContent = `${Math.min(selectedCount, 8)}/8`;
+          liveBriefButtonCount.textContent = `${Math.min(selectedCount, fields.length)}/${fields.length}`;
         }
       };
 

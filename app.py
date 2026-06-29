@@ -91,6 +91,8 @@ def inject_reaction_labels():
         'reaction_images': REACTION_IMAGES,
         'discovery_style_options': DISCOVERY_STYLE_OPTIONS,
         'cultural_feel_options': CULTURAL_FEEL_OPTIONS,
+        'industry_options': INDUSTRY_OPTIONS,
+        'market_position_options': MARKET_POSITION_OPTIONS,
         'feedback_enabled': feedback_enabled(),
         'live_brief_enabled': live_brief_enabled(),
     }
@@ -121,6 +123,31 @@ CULTURAL_FEEL_OPTIONS = [
     'Local / geographic',
     'Premium / editorial',
     'Warm and human',
+]
+
+INDUSTRY_OPTIONS = [
+    'Technology / software',
+    'Healthcare / wellness',
+    'Food / hospitality',
+    'Finance / professional services',
+    'Education / coaching',
+    'Construction / home services',
+    'Staffing / recruiting',
+    'Retail / consumer goods',
+    'Creative / media',
+    'Nonprofit / community',
+    'Other / not sure',
+]
+
+MARKET_POSITION_OPTIONS = [
+    'Fast and dependable',
+    'Human and caring',
+    'Polished and premium',
+    'Local and trusted',
+    'Bold and modern',
+    'Operational and no-nonsense',
+    'Creative and memorable',
+    'Established and professional',
 ]
 
 CULTURAL_SOUND_PARTS = {
@@ -388,10 +415,15 @@ Here is the structured original-name taste:
 """
 
 DEFAULT_FORM_DATA = {
-    'discovery_style': '',
     'pet_type': '',
+    'business_description': '',
+    'target_audience': '',
+    'industry': '',
+    'avoid_feel': '',
+    'discovery_style': '',
     'style': '',
     'vibe': '',
+    'market_position': '',
     'cultural_context': '',
     'timeless_vs_distinctive': '',
     'familiarity_preference': '',
@@ -401,24 +433,33 @@ DEFAULT_FORM_DATA = {
 }
 
 ORIGINAL_FORM_DATA = {
-    'discovery_style': '',
     'pet_type': '',
+    'business_description': '',
+    'target_audience': '',
+    'industry': '',
+    'avoid_feel': '',
+    'discovery_style': '',
     'style': '',
     'vibe': '',
+    'market_position': '',
     'familiarity_preference': '',
     'pronunciation_importance': '',
     'starting_letter': '',
     'length_preference': '',
     'cultural_context': '',
-    'avoid_feel': '',
     'notes': '',
 }
 
 QUESTION_LABELS = {
-    'discovery_style': 'Discovery style',
     'pet_type': 'Project type',
-    'style': 'Style leaning',
-    'vibe': 'Personality',
+    'business_description': 'What the business does',
+    'target_audience': 'Who it serves',
+    'industry': 'Industry',
+    'avoid_feel': 'Avoid',
+    'discovery_style': 'Discovery style',
+    'style': 'Taste leaning',
+    'vibe': 'Immediate signal',
+    'market_position': 'Market feel',
     'cultural_context': 'Name inspiration',
     'timeless_vs_distinctive': 'Timeless vs distinctive',
     'familiarity_preference': 'Familiarity preference',
@@ -435,9 +476,13 @@ def normalized_form_data(source, defaults=None):
 
 def infer_dimensions(form_data):
     return {
+        'business_context': form_data.get('business_description') or 'not specified',
+        'audience_context': form_data.get('target_audience') or 'not specified',
+        'industry_context': form_data.get('industry') or 'not specified',
         'discovery_style': form_data.get('discovery_style') or 'open',
         'style_vector': form_data.get('style') or 'balanced',
         'tone_vector': form_data.get('vibe') or 'open-ended',
+        'market_position': form_data.get('market_position') or 'open-ended',
         'distinctiveness_tolerance': form_data.get('timeless_vs_distinctive') or 'balanced',
         'familiarity_preference': form_data.get('familiarity_preference') or 'open',
         'pronunciation_friction_tolerance': form_data.get('pronunciation_importance') or 'moderate',
@@ -470,6 +515,7 @@ def make_refinement_label(round_number):
 def build_details(form_data, refinement_note=''):
     dimensions = infer_dimensions(form_data)
 
+    business_context = []
     hard_constraints = []
     soft_preferences = []
     vetoes = []
@@ -478,6 +524,12 @@ def build_details(form_data, refinement_note=''):
 
     if form_data.get('pet_type'):
         hard_constraints.append(f"Project type: {form_data['pet_type']}")
+    if form_data.get('business_description'):
+        business_context.append(f"What the business does: {form_data['business_description']}")
+    if form_data.get('target_audience'):
+        business_context.append(f"Who it serves: {form_data['target_audience']}")
+    if form_data.get('industry'):
+        business_context.append(f"Industry/category: {form_data['industry']}")
     if form_data.get('pronunciation_importance'):
         hard_constraints.append(f"Easy-to-say requirement: {form_data['pronunciation_importance']}")
 
@@ -491,14 +543,19 @@ def build_details(form_data, refinement_note=''):
         soft_preferences.append(f"Distinctiveness balance: {form_data['timeless_vs_distinctive']}")
     if form_data.get('familiarity_preference'):
         soft_preferences.append(f"Familiarity preference: {form_data['familiarity_preference']}")
+    if form_data.get('market_position'):
+        soft_preferences.append(f"Market feel: {form_data['market_position']}")
 
     if form_data.get('vibe'):
-        emotional_goals.append(f"Brand signal to capture: {form_data['vibe']}")
+        emotional_goals.append(f"Immediate signal to capture: {form_data['vibe']}")
     if form_data.get('notes'):
-        emotional_goals.append(f"Additional emotional/fit notes: {form_data['notes']}")
+        business_context.append(f"Additional business context: {form_data['notes']}")
+
+    if form_data.get('avoid_feel'):
+        vetoes.append(f"Names should avoid feeling like: {form_data['avoid_feel']}")
 
     if form_data.get('partner_alignment'):
-        compromise_notes.append(f"Taste differences in the decision: {form_data['partner_alignment']}")
+        compromise_notes.append(f"Taste notes or tensions: {form_data['partner_alignment']}")
     if refinement_note:
         compromise_notes.append(refinement_note)
 
@@ -506,6 +563,7 @@ def build_details(form_data, refinement_note=''):
         f"Discovery style: {dimensions['discovery_style']}",
         f"Style vector: {dimensions['style_vector']}",
         f"Tone vector: {dimensions['tone_vector']}",
+        f"Market position: {dimensions['market_position']}",
         f"Distinctiveness tolerance: {dimensions['distinctiveness_tolerance']}",
         f"Familiarity preference: {dimensions['familiarity_preference']}",
         f"Pronunciation friction tolerance: {dimensions['pronunciation_friction_tolerance']}",
@@ -516,6 +574,9 @@ def build_details(form_data, refinement_note=''):
         "RESEARCH-INFORMED NAMING SIGNALS:",
         BRAND_RESEARCH_GUIDANCE,
         business_research_guidance(form_data),
+        "",
+        "BUSINESS CONTEXT / POSITIONING:",
+        *(f"- {item}" for item in (business_context or ["No business context supplied."])),
         "",
         "HARD CONSTRAINTS:",
         *(f"- {item}" for item in (hard_constraints or ["No hard constraints supplied."])),
@@ -538,7 +599,11 @@ def build_details(form_data, refinement_note=''):
 
 
 def project_type_category(form_data):
-    project_type = (form_data.get('pet_type') or '').lower()
+    project_type = ' '.join([
+        form_data.get('pet_type') or '',
+        form_data.get('industry') or '',
+        form_data.get('business_description') or '',
+    ]).lower()
     if any(token in project_type for token in ['app', 'software', 'platform', 'tool', 'saas']):
         return 'app_product'
     if any(token in project_type for token in ['product', 'consumer product', 'goods']):
@@ -549,7 +614,7 @@ def project_type_category(form_data):
         return 'nonprofit'
     if any(token in project_type for token in ['newsletter', 'media', 'content', 'publication']):
         return 'media'
-    if any(token in project_type for token in ['local', 'service', 'shop', 'practice']):
+    if any(token in project_type for token in ['staffing', 'recruiting', 'talent', 'local', 'service', 'shop', 'practice']):
         return 'local_service'
     if any(token in project_type for token in ['business', 'company', 'startup']):
         return 'business'
@@ -758,14 +823,22 @@ def rank_curated_candidates(names, form_data):
 
 def summarize_preferences(form_data):
     parts = []
-    if form_data.get('discovery_style'):
-        parts.append(form_data['discovery_style'])
     if form_data.get('pet_type'):
         parts.append(form_data['pet_type'])
+    if form_data.get('industry'):
+        parts.append(form_data['industry'])
+    if form_data.get('business_description'):
+        parts.append(form_data['business_description'])
+    if form_data.get('target_audience'):
+        parts.append(form_data['target_audience'])
+    if form_data.get('discovery_style'):
+        parts.append(form_data['discovery_style'])
     if form_data.get('style'):
         parts.append(form_data['style'])
     if form_data.get('vibe'):
         parts.append(form_data['vibe'].strip())
+    if form_data.get('market_position'):
+        parts.append(form_data['market_position'])
     if form_data.get('timeless_vs_distinctive'):
         parts.append(form_data['timeless_vs_distinctive'])
     return " · ".join(parts) if parts else "Open taste"
@@ -781,7 +854,13 @@ def build_editor_note(form_data, used_fallback, round_number):
 
     style_phrase = pick_phrase(dimensions['style_vector'], {
         'classic': 'classic, anchored choices',
+        'timeless': 'timeless, enduring choices',
         'modern': 'clean, current choices',
+        'professional': 'professional, credible choices',
+        'friendly': 'friendly, approachable choices',
+        'innovative': 'inventive, forward-looking choices',
+        'elegant': 'elegant, polished choices',
+        'bold': 'bold, confident choices',
         'soft and romantic': 'soft, romantic choices',
         'strong and tailored': 'polished, confident choices',
         'uncommon but usable': 'distinctive choices that still feel easy to live with',
@@ -810,7 +889,26 @@ def build_editor_note(form_data, used_fallback, round_number):
         'sweet': 'sweet',
         'tough': 'tough',
         'open-ended': 'thoughtful and flexible',
+        'trustworthy': 'trustworthy',
+        'premium': 'premium',
+        'technical': 'technical',
+        'creative': 'creative',
+        'local': 'local',
+        'human': 'human',
+        'expert': 'expert',
     }, 'thoughtful and flexible')
+
+    market_phrase = pick_phrase(dimensions['market_position'], {
+        'fast and dependable': 'for a fast, dependable market position',
+        'human and caring': 'for a human, caring market position',
+        'polished and premium': 'for a polished, premium market position',
+        'local and trusted': 'for a local, trusted market position',
+        'bold and modern': 'for a bold, modern market position',
+        'operational and no-nonsense': 'for an operational, no-nonsense market position',
+        'creative and memorable': 'for a creative, memorable market position',
+        'established and professional': 'for an established, professional market position',
+        'open-ended': 'without forcing a single market posture',
+    }, 'without forcing a single market posture')
 
     distinctiveness_phrase = pick_phrase(dimensions['distinctiveness_tolerance'], {
         'strongly timeless': 'with a strongly timeless bias',
@@ -851,7 +949,7 @@ def build_editor_note(form_data, used_fallback, round_number):
     if used_fallback and round_number == 1:
         opener = 'This starter list leans'
 
-    return f"{opener} {style_phrase} with a {tone_phrase} feel, {distinctiveness_phrase}, {familiarity_phrase}, {discovery_phrase}."
+    return f"{opener} {style_phrase} with a {tone_phrase} feel, {market_phrase}, {distinctiveness_phrase}, {familiarity_phrase}, {discovery_phrase}."
 
 
 def build_refine_link(form_data):
@@ -1552,7 +1650,7 @@ def get_share_payload_or_404(share_id):
 
 def summarize_original_preferences(form_data, tune_direction=''):
     parts = []
-    for key in ['discovery_style', 'pet_type', 'style', 'vibe', 'cultural_context', 'starting_letter', 'length_preference']:
+    for key in ['pet_type', 'industry', 'business_description', 'target_audience', 'discovery_style', 'style', 'vibe', 'market_position', 'cultural_context', 'starting_letter', 'length_preference']:
         value = form_data.get(key)
         if value:
             parts.append(value)
@@ -1564,6 +1662,8 @@ def summarize_original_preferences(form_data, tune_direction=''):
 def build_original_editor_note(form_data, tune_direction=''):
     style = (form_data.get('style') or 'balanced').lower()
     vibe = (form_data.get('vibe') or 'open-ended').lower()
+    industry = (form_data.get('industry') or 'open industry').lower()
+    market_position = (form_data.get('market_position') or 'open market feel').lower()
     discovery_style = (form_data.get('discovery_style') or 'balanced discovery').lower()
     cultural_feel = (form_data.get('cultural_context') or '').lower()
     starting_letter = (form_data.get('starting_letter') or 'an open starting letter').strip()
@@ -1572,7 +1672,7 @@ def build_original_editor_note(form_data, tune_direction=''):
     tune_phrase = f" This pass leans {tune_label.lower()}." if tune_direction else ''
     cultural_phrase = f", while carrying {format_cultural_feel_phrase(cultural_feel)}" if cultural_feel else ''
     return (
-        f"These names lean {style}, {vibe}, and {discovery_style}{cultural_phrase}, with {starting_letter.lower()} as the starting cue and a {length} shape.{tune_phrase}"
+        f"These names are for {industry}, lean {style}, {vibe}, {market_position}, and {discovery_style}{cultural_phrase}, with {starting_letter.lower()} as the starting cue and a {length} shape.{tune_phrase}"
     )
 
 
@@ -1598,12 +1698,19 @@ def build_original_details(form_data, tune_direction='', previous_names=None, re
     sections = [
         ('CORE DIRECTION', [
             f"Project type: {form_data.get('pet_type') or 'Open'}",
+            f"Industry/category: {form_data.get('industry') or 'Open'}",
             f"Discovery style: {format_original_discovery_style(form_data.get('discovery_style'))}",
             f"Current tuning request: {tune_label or 'First pass'}",
         ]),
+        ('BUSINESS CONTEXT / POSITIONING', [
+            f"What the business does: {form_data.get('business_description') or 'Not specified'}",
+            f"Who it serves: {form_data.get('target_audience') or 'Not specified'}",
+            f"Additional business context: {form_data.get('notes') or 'No extra notes supplied.'}",
+        ]),
         ('TASTE SIGNALS', [
             f"Core style: {form_data.get('style') or 'Balanced'}",
-            f"Brand signal: {form_data.get('vibe') or 'Open-ended'}",
+            f"Immediate signal: {form_data.get('vibe') or 'Open-ended'}",
+            f"Market feel: {form_data.get('market_position') or 'Open-ended'}",
             f"Naming direction: {form_data.get('cultural_context') or 'No preference'}",
             f"Familiarity preference: {form_data.get('familiarity_preference') or 'Open'}",
         ]),
@@ -1616,9 +1723,6 @@ def build_original_details(form_data, tune_direction='', previous_names=None, re
         ('BRAND-NAMING SIGNALS', [
             business_research_guidance(form_data),
             'Use brand-naming research quietly as ranking guidance, not as user-facing explanation or legal advice.',
-        ]),
-        ('EXTRA CONTEXT', [
-            form_data.get('notes') or 'No extra notes supplied.',
         ]),
         ('PREVIOUS NAMES TO AVOID', [
             *(previous_names or ['No previous names supplied.']),
@@ -1652,25 +1756,33 @@ def slug_similarity(a, b):
 def build_original_name_parts(profile):
     style = (profile.get('style') or '').lower()
     vibe = (profile.get('vibe') or '').lower()
+    market_position = (profile.get('market_position') or '').lower()
     pet_type = (profile.get('pet_type') or '').lower()
+    industry = (profile.get('industry') or '').lower()
+    business_description = (profile.get('business_description') or '').lower()
     requested_start = re.sub(r'[^a-z]', '', (profile.get('starting_letter') or '').lower())[:2]
 
     starts = ['Al', 'El', 'Ma', 'Va', 'Ro', 'Sa', 'Li', 'No', 'Ca', 'Ev', 'Ser', 'La', 'Mar', 'Ori', 'Ari']
     middles = ['ve', 'ria', 'len', 'ora', 'eli', 'ara', 'ine', 'io', 'una', 'eva', 'ari', 'oma', 'era', 'ilo']
     ends = ['a', 'ia', 'en', 'el', 'in', 'ine', 'or', 'is', 'on', 'elle', 'ara', 'o']
 
-    if 'strong' in style or 'strong' in vibe:
-        starts = ['Ca', 'Da', 'Ro', 'Ta', 'Ke', 'Ma', 'Va', 'Re', 'Tor', 'Cal', 'Nor']
-        middles = ['el', 'ar', 'en', 'or', 'ai', 'ev', 'ra', 'io', 'an']
-        ends = ['en', 'or', 'an', 'el', 'is', 'on', 'ar']
+    if 'staffing' in industry or 'recruit' in industry or 'staffing' in business_description:
+        starts = unique_ordered(['Ready', 'Relay', 'Shift', 'Crew', 'Bridge', 'Field', *starts])
+        middles = unique_ordered(['well', 'line', 'path', 'mark', 'on', *middles])
+        ends = unique_ordered(['well', 'line', 'works', 'path', 'on', *ends])
+
+    if 'strong' in style or 'strong' in vibe or 'dependable' in market_position or 'no-nonsense' in market_position:
+        starts = unique_ordered(['Ca', 'Da', 'Ro', 'Ta', 'Ke', 'Ma', 'Va', 'Re', 'Tor', 'Cal', 'Nor', *starts])
+        middles = unique_ordered(['el', 'ar', 'en', 'or', 'ai', 'ev', 'ra', 'io', 'an', *middles])
+        ends = unique_ordered(['en', 'or', 'an', 'el', 'is', 'on', 'ar', *ends])
     elif 'soft' in style or 'romantic' in vibe:
         starts = ['A', 'Eli', 'Lu', 'No', 'Sere', 'Mira', 'Ava', 'Elo', 'Vi', 'Lia', 'Ori']
         middles = ['vel', 'ria', 'lia', 'ena', 'ora', 'avi', 'esi', 'una', 'elle', 'ira']
         ends = ['a', 'ia', 'elle', 'ine', 'ara', 'ina', 'ea']
-    elif 'modern' in style or 'crisp' in vibe or 'bright' in vibe:
-        starts = ['Ze', 'Ka', 'Lo', 'Ari', 'Novi', 'Tali', 'Vero', 'Cai', 'Rumi']
-        middles = ['ra', 'vi', 'lo', 'en', 'ari', 'esa', 'ori']
-        ends = ['a', 'o', 'en', 'is', 'el', 'in']
+    elif 'modern' in style or 'crisp' in vibe or 'bright' in vibe or 'modern' in market_position:
+        starts = unique_ordered(['Ze', 'Ka', 'Lo', 'Ari', 'Novi', 'Tali', 'Vero', 'Cai', 'Rumi', *starts])
+        middles = unique_ordered(['ra', 'vi', 'lo', 'en', 'ari', 'esa', 'ori', *middles])
+        ends = unique_ordered(['a', 'o', 'en', 'is', 'el', 'in', *ends])
 
     tune_direction = (profile.get('tune_direction') or '').lower()
     if tune_direction == 'softer':
@@ -1698,20 +1810,21 @@ def build_original_name_parts(profile):
         middles = unique_ordered([*cultural_middles, *middles[:6]])
         ends = unique_ordered([*cultural_ends, *ends[:6]])
 
-    if any(token in pet_type for token in ['app', 'software', 'platform', 'tool', 'saas']):
+    combined_project = f"{pet_type} {industry} {business_description}"
+    if any(token in combined_project for token in ['app', 'software', 'platform', 'tool', 'saas']):
         starts = unique_ordered(['Nova', 'Vero', 'Kite', 'Luma', 'Signal', 'Orbit', *starts])
         ends = unique_ordered(['o', 'a', 'io', 'ly', 'on', *ends])
-    elif any(token in pet_type for token in ['product', 'goods']):
+    elif any(token in combined_project for token in ['product', 'goods']):
         starts = unique_ordered(['Modo', 'Cove', 'Keen', 'Vera', 'Sola', 'Trove', *starts])
         ends = unique_ordered(['a', 'o', 'er', 'on', 'ly', *ends])
-    elif any(token in pet_type for token in ['studio', 'agency', 'creative', 'consult']):
+    elif any(token in combined_project for token in ['studio', 'agency', 'creative', 'consult']):
         starts = unique_ordered(['Aster', 'Cedar', 'North', 'Vale', 'Morrow', 'Blue', *starts])
         middles = unique_ordered(['ly', 'en', 'ra', 'well', 'field', 'line', *middles])
         ends = unique_ordered(['a', 'on', 'er', 'ly', 'well', 'field', *ends])
-    elif any(token in pet_type for token in ['nonprofit', 'foundation', 'community']):
+    elif any(token in combined_project for token in ['nonprofit', 'foundation', 'community']):
         starts = unique_ordered(['Open', 'Common', 'Root', 'Rise', 'Bridge', 'Kind', *starts])
         ends = unique_ordered(['a', 'on', 'well', 'rise', 'root', *ends])
-    elif any(token in pet_type for token in ['newsletter', 'media', 'content', 'publication']):
+    elif any(token in combined_project for token in ['newsletter', 'media', 'content', 'publication']):
         starts = unique_ordered(['Signal', 'Brief', 'Field', 'Margin', 'North', 'Daily', *starts])
         ends = unique_ordered(['note', 'brief', 'letter', 'daily', 'line', *ends])
 
@@ -1901,7 +2014,7 @@ def score_original_candidate(name, form_data, known_names):
 
 def build_original_style_line(form_data, tune_direction=''):
     tune_label = ORIGINAL_TUNE_LABELS.get(tune_direction, tune_direction.replace('_', ' ')) if tune_direction else ''
-    pieces = [item for item in [form_data.get('style'), form_data.get('vibe'), form_data.get('cultural_context'), tune_label] if item]
+    pieces = [item for item in [form_data.get('style'), form_data.get('vibe'), form_data.get('market_position'), form_data.get('cultural_context'), tune_label] if item]
     return ', '.join(pieces) if pieces else 'Distinctive, usable, original'
 
 
@@ -1916,8 +2029,14 @@ def format_cultural_feel_phrase(cultural_feel):
 def build_original_fit_note(name, form_data, tune_direction=''):
     style = form_data.get('style') or 'balanced'
     vibe = form_data.get('vibe') or 'thoughtful'
+    market_position = form_data.get('market_position')
+    industry = form_data.get('industry')
     starting_letter = (form_data.get('starting_letter') or '').strip().upper()
     note = f"{name} was shaped to feel {style.lower()} and {vibe.lower()}."
+    if industry:
+        note += f" It is tuned for {industry.lower()}."
+    if market_position:
+        note += f" It keeps a {market_position.lower()} market feel in view."
     if form_data.get('cultural_context'):
         note += f" It leans toward {format_cultural_feel_phrase(form_data['cultural_context'])}."
     if starting_letter:

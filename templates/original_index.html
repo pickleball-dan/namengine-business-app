@@ -31,15 +31,15 @@
             <article>
               <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.8 4.6c-1.6-1.6-4.1-1.5-5.7.1L12 7.8 8.9 4.7C7.3 3.1 4.8 3 3.2 4.6 1.5 6.3 1.6 9 3.3 10.7L12 19.4l8.7-8.7c1.7-1.7 1.8-4.4.1-6.1Z"/></svg></span>
               <div class="process-copy">
-                <h2>We start with what you love.</h2>
-                <p>Every unforgettable business name begins with a feeling. NamEngine learns the sounds, styles, and personality cues you are drawn to.</p>
+                <h2>We learn the business first.</h2>
+                <p>NamEngine starts with what you are naming, who it is for, and the market signals the name needs to carry.</p>
               </div>
             </article>
             <article>
               <span class="process-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/><path d="M8 6v0"/><path d="M15 12v0"/><path d="M11 18v0"/></svg></span>
               <div class="process-copy">
-                <h2>You set the direction.</h2>
-                <p>Tell NamEngine what you want the names to feel like: cuter, cooler, calmer, bolder, or more distinctive.</p>
+                <h2>Then you set the taste.</h2>
+                <p>Tell NamEngine what kind of names you naturally respond to: trusted, modern, premium, bold, familiar, or distinctive.</p>
               </div>
             </article>
             <article>
@@ -81,19 +81,8 @@
       </div>
 
       <form action="{{ url_for('original_results') }}" method="post" class="intake-form js-loading-form" data-loading-text="Creating your original business names...">
+        <p class="form-section-label">Tell us about your business</p>
         <div class="grid two-up">
-          <label>
-            <span>Discovery style</span>
-            <div class="select-wrap tinted-select tinted-amber">
-              <select name="discovery_style">
-                <option value="" {% if not form_data.discovery_style %}selected{% endif %}>Choose</option>
-                {% for option in discovery_style_options %}
-                <option {% if form_data.discovery_style == option %}selected{% endif %}>{{ option }}</option>
-                {% endfor %}
-              </select>
-            </div>
-          </label>
-
           <label>
             <span>What are you naming?</span>
             <div class="select-wrap tinted-select tinted-aqua">
@@ -111,19 +100,49 @@
               </select>
             </div>
           </label>
+
+          <label>
+            <span>Industry</span>
+            <div class="select-wrap tinted-select tinted-amber">
+              <select name="industry">
+                <option value="" {% if not form_data.industry %}selected{% endif %}>Choose</option>
+                {% for option in industry_options %}
+                <option {% if form_data.industry == option %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </label>
         </div>
 
+        <label>
+          <span>What does the business do?</span>
+          <textarea name="business_description" rows="2" placeholder="Temporary staffing for hotels, events, and local employers...">{{ form_data.business_description }}</textarea>
+        </label>
+
+        <label>
+          <span>Who is it for?</span>
+          <input type="text" name="target_audience" value="{{ form_data.target_audience }}" placeholder="Busy operators who need reliable short-notice coverage...">
+        </label>
+
+        <label>
+          <span>Anything the name should avoid?</span>
+          <input type="text" name="avoid_feel" value="{{ form_data.avoid_feel }}" placeholder="Gig-app, cheap, overly corporate, hard to say, too abstract...">
+        </label>
+
+        <p class="form-section-label">Now shape the taste</p>
         <div class="grid two-up">
           <label>
-            <span>Core style</span>
+            <span>What kind of names do you naturally respond to?</span>
             <div class="select-wrap tinted-select tinted-lilac">
               <select name="style">
                 <option value="" {% if not form_data.style %}selected{% endif %}>Choose</option>
-                <option {% if form_data.style == 'Classic' %}selected{% endif %}>Classic</option>
+                <option {% if form_data.style == 'Timeless' %}selected{% endif %}>Timeless</option>
                 <option {% if form_data.style == 'Modern' %}selected{% endif %}>Modern</option>
-                <option {% if form_data.style == 'Soft and romantic' %}selected{% endif %}>Soft and romantic</option>
-                <option {% if form_data.style == 'Strong and tailored' %}selected{% endif %}>Strong and tailored</option>
-                <option {% if form_data.style == 'Uncommon but usable' %}selected{% endif %}>Uncommon but usable</option>
+                <option {% if form_data.style == 'Professional' %}selected{% endif %}>Professional</option>
+                <option {% if form_data.style == 'Friendly' %}selected{% endif %}>Friendly</option>
+                <option {% if form_data.style == 'Innovative' %}selected{% endif %}>Innovative</option>
+                <option {% if form_data.style == 'Elegant' %}selected{% endif %}>Elegant</option>
+                <option {% if form_data.style == 'Bold' %}selected{% endif %}>Bold</option>
               </select>
             </div>
           </label>
@@ -149,6 +168,18 @@
         </div>
 
         <div class="grid two-up">
+          <label>
+            <span>Market feel</span>
+            <div class="select-wrap tinted-select tinted-rose">
+              <select name="market_position">
+                <option value="" {% if not form_data.market_position %}selected{% endif %}>Choose</option>
+                {% for option in market_position_options %}
+                <option {% if form_data.market_position == option %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </label>
+
           <label>
             <span>How familiar should it feel?</span>
             <div class="select-wrap tinted-select tinted-rose">
@@ -176,6 +207,18 @@
         </div>
 
         <div class="grid two-up">
+          <label>
+            <span>Discovery style</span>
+            <div class="select-wrap tinted-select tinted-amber">
+              <select name="discovery_style">
+                <option value="" {% if not form_data.discovery_style %}selected{% endif %}>Choose</option>
+                {% for option in discovery_style_options %}
+                <option {% if form_data.discovery_style == option %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </label>
+
           <label>
           <span>Letter to begin the name</span>
             <input type="text" name="starting_letter" value="{{ form_data.starting_letter }}" maxlength="2" placeholder="A, E, L...">
@@ -208,13 +251,8 @@
         </label>
 
         <label>
-          <span>What should the name avoid feeling like?</span>
-          <input type="text" name="avoid_feel" value="{{ form_data.avoid_feel }}" placeholder="Too trendy, fantasy-ish, overly soft, hard to say...">
-        </label>
-
-        <label>
-          <span>Tell us about the business</span>
-          <textarea name="notes" rows="3" placeholder="Industry, audience, offer, tone, competitors to avoid, words you like...">{{ form_data.notes }}</textarea>
+          <span>Anything else we should know?</span>
+          <textarea name="notes" rows="3" placeholder="Competitors, words you like, location, future plans, or extra context...">{{ form_data.notes }}</textarea>
         </label>
 
         <div class="loading-wrap">
