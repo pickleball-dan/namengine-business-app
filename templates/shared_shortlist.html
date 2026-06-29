@@ -24,10 +24,10 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+  {% include '_platform_nav.html' %}
   <main class="shell results-shell shared-shortlist">
     <section class="results-header results-header-grid">
       <div>
-        <a class="platform-home-link" href="{{ platform_home_url }}">NamEngine+</a>
         <img class="logo-lockup small-logo" src="{{ url_for('static', filename='images/namengine-business-logo.png') }}" alt="NamEngine Business logo">
         <p class="eyebrow">Shared {{ round_label }}</p>
         <h1>A saved NamEngine Business list.</h1>
@@ -212,4 +212,5 @@
   </script>
 </body>
 </html>
+
 

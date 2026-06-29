@@ -24,6 +24,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+  {% include '_platform_nav.html' %}
   <main class="shell home-shell">
     <section class="hero-card home-hero-card home-hero-solo">
       <div>
@@ -32,7 +33,6 @@
           <a class="feedback-mini-link" href="{{ url_for('feedback') }}">Give beta feedback</a>
         </div>
         {% endif %}
-        <a class="platform-home-link" href="{{ platform_home_url }}">NamEngine+</a>
         <img class="logo-lockup" src="{{ url_for('static', filename='images/namengine-business-logo.png') }}" alt="NamEngine Business logo">
         <p class="eyebrow">Thoughtful business naming, without the noise</p>
         <h1>Find the name your idea can grow into.</h1>
@@ -484,4 +484,5 @@
   </script>
 </body>
 </html>
+
 
