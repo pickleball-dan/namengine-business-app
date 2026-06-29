@@ -34,7 +34,7 @@ MAX_REFINEMENT_ROUNDS = 2
 SHARE_STORE_PATH = Path(os.getenv('SHARE_STORE_PATH', Path(__file__).with_name('share_store.json')))
 FEEDBACK_STORE_PATH = Path(os.getenv('FEEDBACK_STORE_PATH', Path(__file__).with_name('feedback_store.json')))
 FEEDBACK_RATE_LIMIT = {}
-PLATFORM_HOME_URL = os.getenv('NAMENGINE_HOME_URL', 'https://namengine-main.onrender.com/')
+PLATFORM_HOME_URL = os.getenv('NAMENGINE_HOME_URL', 'https://namegine-main-1.onrender.com/')
 
 REACTION_OPTIONS = [
     {
