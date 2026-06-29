@@ -1705,8 +1705,9 @@ def build_original_name_parts(profile):
         starts = unique_ordered(['Modo', 'Cove', 'Keen', 'Vera', 'Sola', 'Trove', *starts])
         ends = unique_ordered(['a', 'o', 'er', 'on', 'ly', *ends])
     elif any(token in pet_type for token in ['studio', 'agency', 'creative', 'consult']):
-        starts = unique_ordered(['Cedar', 'North', 'Aster', 'Blue', 'Foundry', 'Lane', *starts])
-        ends = unique_ordered(['house', 'works', 'lane', 'studio', 'co', *ends])
+        starts = unique_ordered(['Aster', 'Cedar', 'North', 'Vale', 'Morrow', 'Blue', *starts])
+        middles = unique_ordered(['ly', 'en', 'ra', 'well', 'field', 'line', *middles])
+        ends = unique_ordered(['a', 'on', 'er', 'ly', 'well', 'field', *ends])
     elif any(token in pet_type for token in ['nonprofit', 'foundation', 'community']):
         starts = unique_ordered(['Open', 'Common', 'Root', 'Rise', 'Bridge', 'Kind', *starts])
         ends = unique_ordered(['a', 'on', 'well', 'rise', 'root', *ends])
