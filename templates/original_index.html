@@ -14,11 +14,6 @@
   <main class="shell home-shell">
     <section class="hero-card original-hero-card original-hero-wide-title">
       <div>
-        {% if feedback_enabled %}
-        <div class="home-utility-actions">
-          <a class="feedback-mini-link" href="{{ url_for('feedback') }}">Give beta feedback</a>
-        </div>
-        {% endif %}
         <img class="logo-lockup" src="{{ url_for('static', filename='images/namengine-business-logo.png') }}" alt="NamEngine Business logo">
         <p class="eyebrow">Original Business Name Studio</p>
         <h1>Create a business name that feels built for your idea.</h1>

@@ -28,11 +28,6 @@
   <main class="shell home-shell">
     <section class="hero-card home-hero-card home-hero-solo">
       <div>
-        {% if feedback_enabled %}
-        <div class="home-utility-actions">
-          <a class="feedback-mini-link" href="{{ url_for('feedback') }}">Give beta feedback</a>
-        </div>
-        {% endif %}
         <img class="logo-lockup" src="{{ url_for('static', filename='images/namengine-business-logo.png') }}" alt="NamEngine Business logo">
         <p class="eyebrow">Thoughtful business naming, without the noise</p>
         <h1>Find the name your idea can grow into.</h1>
