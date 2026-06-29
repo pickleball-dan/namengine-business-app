@@ -1302,7 +1302,7 @@ def build_feedback_admin_link():
 
 
 def feedback_enabled():
-    return os.getenv('FEEDBACK_ENABLED', '').strip().lower() in {'1', 'true', 'yes', 'on'}
+    return os.getenv('FEEDBACK_ENABLED', 'true').strip().lower() not in {'0', 'false', 'no', 'off'}
 
 
 def live_brief_enabled():
