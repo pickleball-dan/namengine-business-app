@@ -236,12 +236,12 @@
               </label>
 
               <label>
-                <span>Discovery style</span>
-                <div class="select-wrap tinted-select tinted-amber">
-                  <select name="discovery_style" data-brief-label="Discovery">
-                    <option value="" {% if not form_data.discovery_style %}selected{% endif %}>Choose</option>
-                    {% for option in discovery_style_options %}
-                    <option {% if form_data.discovery_style == option %}selected{% endif %}>{{ option }}</option>
+                <span>Naming direction</span>
+                <div class="select-wrap tinted-select tinted-mint">
+                  <select name="cultural_context" data-brief-label="Direction">
+                    <option value="" {% if not form_data.cultural_context %}selected{% endif %}>No preference</option>
+                    {% for option in cultural_feel_options %}
+                    <option {% if form_data.cultural_context == option %}selected{% endif %}>{{ option }}</option>
                     {% endfor %}
                   </select>
                 </div>
@@ -249,12 +249,12 @@
             </div>
 
             <label>
-              <span>Naming direction</span>
-              <div class="select-wrap tinted-select tinted-mint">
-                <select name="cultural_context" data-brief-label="Direction">
-                  <option value="" {% if not form_data.cultural_context %}selected{% endif %}>No preference</option>
-                  {% for option in cultural_feel_options %}
-                  <option {% if form_data.cultural_context == option %}selected{% endif %}>{{ option }}</option>
+              <span>Discovery style</span>
+              <div class="select-wrap tinted-select tinted-amber">
+                <select name="discovery_style" data-brief-label="Discovery">
+                  <option value="" {% if not form_data.discovery_style %}selected{% endif %}>Choose</option>
+                  {% for option in discovery_style_options %}
+                  <option {% if form_data.discovery_style == option %}selected{% endif %}>{{ option }}</option>
                   {% endfor %}
                 </select>
               </div>
