@@ -1207,8 +1207,8 @@ textarea { resize: vertical; }
 
 .domain-info {
   display: grid;
-  gap: 8px;
-  padding: 14px;
+  gap: 6px;
+  padding: 12px 14px;
   border: 1px solid rgba(36, 99, 166, 0.12);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.62);
@@ -1225,26 +1225,6 @@ textarea { resize: vertical; }
   margin: 0;
   color: var(--accent-deep);
   font-weight: 800;
-  overflow-wrap: anywhere;
-}
-
-.domain-alt-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.domain-alt-row span {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  max-width: 100%;
-  padding: 5px 8px;
-  border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--ink);
-  font-size: 0.78rem;
-  font-weight: 700;
   overflow-wrap: anywhere;
 }
 

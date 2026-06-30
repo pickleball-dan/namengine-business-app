@@ -978,7 +978,7 @@ def domain_slug(name):
     return cleaned or 'name'
 
 
-def domain_status(domain, status='unknown', label='Check manually'):
+def domain_status(domain, status='unknown', label=''):
     return {
         'domain': domain,
         'status': status,
@@ -1031,7 +1031,7 @@ def cached_domain_status(cache, domain, now):
     ttl = DOMAIN_UNKNOWN_CACHE_TTL_SECONDS if cached.get('status') == 'unknown' else DOMAIN_CACHE_TTL_SECONDS
     if not isinstance(checked_at, (int, float)) or now - checked_at > ttl:
         return None
-    return domain_status(domain, cached.get('status', 'unknown'), cached.get('label', 'Check manually'))
+    return domain_status(domain, cached.get('status', 'unknown'), cached.get('label', ''))
 
 
 def godaddy_credentials():
@@ -1098,7 +1098,7 @@ def check_domain_availability(domains):
                 results[domain] = status
                 cache[domain] = {
                     'status': status.get('status', 'unknown'),
-                    'label': status.get('label', 'Check manually'),
+                    'label': status.get('label', ''),
                     'checked_at': now,
                 }
         save_domain_cache(cache)
@@ -1116,8 +1116,34 @@ def build_domain_info(name):
     return {
         'primary': ideas[0],
         'alternatives': ideas[1:],
-        'note': 'Quick availability check not run yet.',
+        'display_domain': ideas[0],
+        'display_status': None,
+        'note': '',
     }
+
+
+def choose_display_domain(info, statuses):
+    ideas = [info.get('primary'), *(info.get('alternatives') or [])]
+    idea_statuses = [
+        statuses.get(domain, domain_status(domain))
+        for domain in ideas
+        if domain
+    ]
+    if not idea_statuses:
+        return info.get('primary'), None
+
+    available = next((status for status in idea_statuses if status.get('status') == 'available'), None)
+    if available:
+        return available.get('domain'), available
+
+    checked = next(
+        (status for status in idea_statuses if status.get('status') not in {'not_checked', 'unknown'}),
+        None,
+    )
+    if checked:
+        return checked.get('domain'), checked
+
+    return idea_statuses[0].get('domain'), None
 
 
 def attach_domain_availability(names):
@@ -1134,23 +1160,10 @@ def attach_domain_availability(names):
         info = item.get('domain_info')
         if not info:
             continue
-        primary_status = statuses.get(info.get('primary'))
-        alternative_statuses = [
-            statuses.get(domain, domain_status(domain))
-            for domain in info.get('alternatives', [])
-        ]
-        checked_statuses = [primary_status, *alternative_statuses]
-        status_values = {status.get('status') for status in checked_statuses if status}
-        if status_values <= {'not_checked'}:
-            note = 'Quick availability check not run yet.'
-        elif 'unknown' in status_values:
-            note = 'Quick check only, not guaranteed. Verify before purchase.'
-        else:
-            note = 'Quick GoDaddy check, not guaranteed. Verify before purchase.'
-
-        info['primary_status'] = primary_status
-        info['alternative_statuses'] = alternative_statuses
-        info['note'] = note
+        display_domain, display_status = choose_display_domain(info, statuses)
+        info['display_domain'] = display_domain
+        info['display_status'] = display_status
+        info['note'] = ''
     return names
 
 
