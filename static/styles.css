@@ -1231,8 +1231,10 @@ textarea { resize: vertical; }
 .domain-status {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-height: 20px;
-  padding: 2px 7px;
+  min-width: max-content;
+  padding: 3px 10px;
   border-radius: 999px;
   border: 1px solid rgba(66, 55, 42, 0.14);
   background: rgba(255, 255, 255, 0.72);
