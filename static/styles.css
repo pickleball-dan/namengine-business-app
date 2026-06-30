@@ -1973,8 +1973,8 @@ textarea { resize: vertical; }
   }
 
   .home-hero-with-motif {
-    grid-template-columns: minmax(0, 0.72fr) minmax(110px, 0.44fr);
-    gap: 8px;
+    grid-template-columns: minmax(0, 0.68fr) minmax(130px, 0.5fr);
+    gap: 10px;
     align-items: center;
   }
 
@@ -1987,7 +1987,7 @@ textarea { resize: vertical; }
   }
 
   .hero-motif svg {
-    width: min(190px, 42vw);
+    width: min(220px, 48vw);
   }
 
   .home-path-button,
