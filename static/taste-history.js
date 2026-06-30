@@ -73,6 +73,15 @@
     return `${path}?${query}${hash}`;
   };
 
+  const resultUrlFor = (item) => {
+    const query = buildQuery(item.formData);
+    if (!query) {
+      return '';
+    }
+    const path = (item.mode || '').toLowerCase() === 'original' ? '/original/results' : '/results';
+    return `${path}?${query}`;
+  };
+
   const getResultIdentity = (options) => {
     const shareButton = document.querySelector('.js-share-trigger');
     const shareUrl = absoluteShareUrl(options.shareUrl || shareButton?.dataset.shareUrl);
@@ -163,6 +172,7 @@
       const names = document.createElement('p');
       const actions = document.createElement('div');
       const resumeUrl = resumeUrlFor(item);
+      const resultUrl = resultUrlFor(item);
 
       header.className = 'taste-history-session-head';
       actions.className = 'taste-history-actions';
@@ -180,7 +190,7 @@
       }
 
       const view = document.createElement('a');
-      view.href = item.shareUrl || '#';
+      view.href = resultUrl || item.shareUrl || '#';
       view.textContent = 'View list';
       actions.appendChild(view);
       li.appendChild(actions);

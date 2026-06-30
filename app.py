@@ -43,6 +43,13 @@ DOMAIN_UNKNOWN_CACHE_TTL_SECONDS = int(os.getenv('DOMAIN_UNKNOWN_CACHE_TTL_SECON
 FEEDBACK_RATE_LIMIT = {}
 PLATFORM_HOME_URL = os.getenv('NAMENGINE_HOME_URL', 'https://namegine-main-1.onrender.com/')
 
+
+def write_json_atomic(path, payload):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp_path = path.with_name(f"{path.name}.tmp")
+    temp_path.write_text(json.dumps(payload, indent=2), encoding='utf-8')
+    temp_path.replace(path)
+
 REACTION_OPTIONS = [
     {
         'value': 'love',
@@ -1018,7 +1025,7 @@ def load_domain_cache():
 
 def save_domain_cache(domains):
     try:
-        DOMAIN_CACHE_PATH.write_text(json.dumps({'domains': domains}, indent=2), encoding='utf-8')
+        write_json_atomic(DOMAIN_CACHE_PATH, {'domains': domains})
     except Exception:
         app.logger.exception('Failed to save domain cache to %s', DOMAIN_CACHE_PATH)
 
@@ -1474,7 +1481,7 @@ def load_share_store():
 
 
 def save_share_store(payload):
-    SHARE_STORE_PATH.write_text(json.dumps(payload, indent=2), encoding='utf-8')
+    write_json_atomic(SHARE_STORE_PATH, payload)
 
 
 def load_feedback_store():
@@ -1489,7 +1496,7 @@ def load_feedback_store():
 
 
 def save_feedback_store(payload):
-    FEEDBACK_STORE_PATH.write_text(json.dumps(payload, indent=2), encoding='utf-8')
+    write_json_atomic(FEEDBACK_STORE_PATH, payload)
 
 
 def clean_feedback_value(value, max_length=1200):
