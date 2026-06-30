@@ -11,6 +11,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urlencode
 from urllib.request import Request, urlopen
 from flask import Flask, abort, render_template, request, url_for
+from markupsafe import Markup
 
 try:
     from dotenv import load_dotenv
@@ -42,6 +43,7 @@ DOMAIN_CACHE_TTL_SECONDS = int(os.getenv('DOMAIN_CACHE_TTL_SECONDS', str(6 * 60 
 DOMAIN_UNKNOWN_CACHE_TTL_SECONDS = int(os.getenv('DOMAIN_UNKNOWN_CACHE_TTL_SECONDS', str(15 * 60)))
 FEEDBACK_RATE_LIMIT = {}
 PLATFORM_HOME_URL = os.getenv('NAMENGINE_HOME_URL', 'https://namegine-main-1.onrender.com/')
+STATIC_DIR = Path(__file__).with_name('static')
 
 
 def write_json_atomic(path, payload):
@@ -49,6 +51,21 @@ def write_json_atomic(path, payload):
     temp_path = path.with_name(f"{path.name}.tmp")
     temp_path.write_text(json.dumps(payload, indent=2), encoding='utf-8')
     temp_path.replace(path)
+
+
+def inline_svg(filename):
+    svg_path = (STATIC_DIR / filename).resolve()
+    static_root = STATIC_DIR.resolve()
+    try:
+        svg_path.relative_to(static_root)
+    except ValueError:
+        return ''
+    if svg_path.suffix.lower() != '.svg':
+        return ''
+    try:
+        return Markup(svg_path.read_text(encoding='utf-8'))
+    except OSError:
+        return ''
 
 REACTION_OPTIONS = [
     {
@@ -111,6 +128,7 @@ def inject_reaction_labels():
         'feedback_enabled': feedback_enabled(),
         'live_brief_enabled': live_brief_enabled(),
         'platform_home_url': PLATFORM_HOME_URL,
+        'inline_svg': inline_svg,
     }
 
 ORIGINAL_TUNE_OPTIONS = [

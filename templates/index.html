@@ -26,9 +26,8 @@
 <body>
   {% include '_platform_nav.html' %}
   <main class="shell home-shell">
-    <section class="hero-card home-hero-card home-hero-solo">
-      <div>
-        <img class="logo-lockup" src="{{ url_for('static', filename='images/namengine-business-logo.png') }}" alt="NamEngine Business logo">
+    <section class="hero-card home-hero-card home-hero-solo home-hero-with-motif">
+      <div class="home-hero-copy">
         <p class="eyebrow">Thoughtful business naming, without the noise</p>
         <h1>Find the name your idea can grow into.</h1>
         <p class="home-subheading">Discover business names shaped by positioning, sound, memorability, and fit.</p>
@@ -81,6 +80,9 @@
           </div>
         </details>
       </div>
+      <figure class="hero-motif" aria-hidden="true">
+        {{ inline_svg('images/namengine-business-motif.svg') }}
+      </figure>
     </section>
 
     <section class="form-card" id="brief">
