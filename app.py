@@ -964,6 +964,27 @@ def slugify_name(name):
     return slug or 'name'
 
 
+def domain_slug(name):
+    cleaned = re.sub(r'\band\b', '', (name or '').lower())
+    cleaned = re.sub(r'\b(co|company|inc|llc|studio|studios|group)\b', '', cleaned)
+    cleaned = re.sub(r'[^a-z0-9]+', '', cleaned)
+    return cleaned or 'name'
+
+
+def build_domain_info(name):
+    base = domain_slug(name)
+    ideas = [f"{base}.com", f"get{base}.com", f"{base}.co"]
+    if len(base) <= 10:
+        ideas.append(f"{base}.io")
+    else:
+        ideas.append(f"hello{base}.com")
+    return {
+        'primary': ideas[0],
+        'alternatives': ideas[1:],
+        'note': 'Domain availability not checked.',
+    }
+
+
 def clean_emotional_opener(value):
     cleaned = re.sub(r'\s+', ' ', (value or '').strip())
     if not cleaned:
@@ -1052,6 +1073,7 @@ def enrich_name(item, form_data, index, total):
     enriched['why_detail'] = (
         f"{item['why']} It has the kind of shape and tone that tends to keep sounding good after the novelty wears off."
     )
+    enriched['domain_info'] = build_domain_info(item['name'])
     return enriched
 
 
@@ -1553,7 +1575,7 @@ def serialize_form_data(form_data):
 
 
 def serialize_names(names):
-    keys = ['name', 'pronunciation', 'origin', 'style', 'meaning', 'emotional_opener', 'why', 'slug', 'rank_label', 'standout', 'fit_note', 'pairing_note', 'why_detail']
+    keys = ['name', 'pronunciation', 'origin', 'style', 'meaning', 'emotional_opener', 'why', 'slug', 'rank_label', 'standout', 'fit_note', 'pairing_note', 'why_detail', 'domain_info']
     return [{key: item.get(key) for key in keys} for item in names]
 
 
@@ -2227,6 +2249,7 @@ def enrich_original_names(names, form_data=None):
         enriched['emotional_opener'] = clean_emotional_opener(
             enriched.get('emotional_opener') or infer_original_emotional_opener(enriched, form_data)
         )
+        enriched['domain_info'] = build_domain_info(enriched['name'])
         enriched_names.append(enriched)
     return enriched_names
 

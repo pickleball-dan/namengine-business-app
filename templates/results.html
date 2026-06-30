@@ -61,6 +61,18 @@
             <p><strong>Origin</strong><span>{{ item.origin }}</span></p>
             <p><strong>Meaning</strong><span>{{ item.meaning }}</span></p>
           </div>
+          {% if item.domain_info %}
+          <div class="domain-info">
+            <p class="panel-label">Domain ideas</p>
+            <p class="domain-primary">{{ item.domain_info.primary }}</p>
+            <div class="domain-alt-row">
+              {% for domain in item.domain_info.alternatives %}
+              <span>{{ domain }}</span>
+              {% endfor %}
+            </div>
+            <p class="domain-note">{{ item.domain_info.note }}</p>
+          </div>
+          {% endif %}
           <p class="why">{{ item.why }}</p>
           <div class="reaction-block">
             <p class="reaction-feedback" aria-live="polite"></p>
@@ -137,6 +149,18 @@
           <p><strong>Origin</strong><span>{{ item.origin }}</span></p>
           <p><strong>Meaning</strong><span>{{ item.meaning }}</span></p>
         </div>
+        {% if item.domain_info %}
+        <div class="domain-info">
+          <p class="panel-label">Domain ideas</p>
+          <p class="domain-primary">{{ item.domain_info.primary }}</p>
+          <div class="domain-alt-row">
+            {% for domain in item.domain_info.alternatives %}
+            <span>{{ domain }}</span>
+            {% endfor %}
+          </div>
+          <p class="domain-note">{{ item.domain_info.note }}</p>
+        </div>
+        {% endif %}
         <p class="why">{{ item.why }}</p>
         <details class="fit-preview">
           <summary>Why this name?</summary>
