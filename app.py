@@ -986,6 +986,14 @@ def domain_slug(name):
 
 
 def domain_status(domain, status='unknown', label=''):
+    if not label:
+        label = {
+            'available': 'Available',
+            'taken': 'Taken',
+            'premium': 'Premium',
+            'not_checked': 'Not checked',
+            'unknown': 'Unknown',
+        }.get(status, status.replace('_', ' ').title())
     return {
         'domain': domain,
         'status': status,
@@ -1035,7 +1043,7 @@ def cached_domain_status(cache, domain, now):
     if not isinstance(cached, dict):
         return None
     checked_at = cached.get('checked_at', 0)
-    ttl = DOMAIN_UNKNOWN_CACHE_TTL_SECONDS if cached.get('status') == 'unknown' else DOMAIN_CACHE_TTL_SECONDS
+    ttl = DOMAIN_UNKNOWN_CACHE_TTL_SECONDS if cached.get('status') in {'unknown', 'not_checked'} else DOMAIN_CACHE_TTL_SECONDS
     if not isinstance(checked_at, (int, float)) or now - checked_at > ttl:
         return None
     return domain_status(domain, cached.get('status', 'unknown'), cached.get('label', ''))
@@ -1150,7 +1158,7 @@ def choose_display_domain(info, statuses):
     if checked:
         return checked.get('domain'), checked
 
-    return idea_statuses[0].get('domain'), None
+    return idea_statuses[0].get('domain'), idea_statuses[0]
 
 
 def attach_domain_availability(names):
