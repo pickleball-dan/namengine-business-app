@@ -3,9 +3,13 @@ import os
 import random
 import re
 import secrets
+import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import urlencode
+from urllib.error import HTTPError, URLError
+from urllib.parse import quote, urlencode
+from urllib.request import Request, urlopen
 from flask import Flask, abort, render_template, request, url_for
 
 try:
@@ -33,6 +37,9 @@ MAX_SHORTLISTS = 200
 MAX_REFINEMENT_ROUNDS = 2
 SHARE_STORE_PATH = Path(os.getenv('SHARE_STORE_PATH', Path(__file__).with_name('share_store.json')))
 FEEDBACK_STORE_PATH = Path(os.getenv('FEEDBACK_STORE_PATH', Path(__file__).with_name('feedback_store.json')))
+DOMAIN_CACHE_PATH = Path(os.getenv('DOMAIN_CACHE_PATH', Path(__file__).with_name('domain_cache.json')))
+DOMAIN_CACHE_TTL_SECONDS = int(os.getenv('DOMAIN_CACHE_TTL_SECONDS', str(6 * 60 * 60)))
+DOMAIN_UNKNOWN_CACHE_TTL_SECONDS = int(os.getenv('DOMAIN_UNKNOWN_CACHE_TTL_SECONDS', str(15 * 60)))
 FEEDBACK_RATE_LIMIT = {}
 PLATFORM_HOME_URL = os.getenv('NAMENGINE_HOME_URL', 'https://namegine-main-1.onrender.com/')
 
@@ -971,6 +978,134 @@ def domain_slug(name):
     return cleaned or 'name'
 
 
+def domain_status(domain, status='unknown', label='Check manually'):
+    return {
+        'domain': domain,
+        'status': status,
+        'label': label,
+        'class': status.replace('_', '-'),
+    }
+
+
+def domain_status_from_godaddy(domain, payload):
+    available = payload.get('available') if isinstance(payload, dict) else None
+    premium_threshold = int(os.getenv('GODADDY_PREMIUM_PRICE_THRESHOLD', '100000000'))
+    price = payload.get('price') if isinstance(payload, dict) else None
+    is_premium = bool(payload.get('premium')) if isinstance(payload, dict) else False
+    if isinstance(price, int) and price >= premium_threshold:
+        is_premium = True
+
+    if available is True:
+        if is_premium:
+            return domain_status(domain, 'premium', 'Premium')
+        return domain_status(domain, 'available', 'Available')
+    if available is False:
+        return domain_status(domain, 'taken', 'Taken')
+    return domain_status(domain)
+
+
+def load_domain_cache():
+    if not DOMAIN_CACHE_PATH.exists():
+        return {}
+    try:
+        payload = json.loads(DOMAIN_CACHE_PATH.read_text(encoding='utf-8'))
+        domains = payload.get('domains', payload) if isinstance(payload, dict) else {}
+        return domains if isinstance(domains, dict) else {}
+    except Exception:
+        app.logger.exception('Failed to load domain cache from %s', DOMAIN_CACHE_PATH)
+        return {}
+
+
+def save_domain_cache(domains):
+    try:
+        DOMAIN_CACHE_PATH.write_text(json.dumps({'domains': domains}, indent=2), encoding='utf-8')
+    except Exception:
+        app.logger.exception('Failed to save domain cache to %s', DOMAIN_CACHE_PATH)
+
+
+def cached_domain_status(cache, domain, now):
+    cached = cache.get(domain)
+    if not isinstance(cached, dict):
+        return None
+    checked_at = cached.get('checked_at', 0)
+    ttl = DOMAIN_UNKNOWN_CACHE_TTL_SECONDS if cached.get('status') == 'unknown' else DOMAIN_CACHE_TTL_SECONDS
+    if not isinstance(checked_at, (int, float)) or now - checked_at > ttl:
+        return None
+    return domain_status(domain, cached.get('status', 'unknown'), cached.get('label', 'Check manually'))
+
+
+def godaddy_credentials():
+    api_key = os.getenv('GODADDY_API_KEY', '').strip()
+    api_secret = os.getenv('GODADDY_API_SECRET', '').strip()
+    return api_key, api_secret
+
+
+def godaddy_domain_available(domain):
+    api_key, api_secret = godaddy_credentials()
+    if not api_key or not api_secret:
+        return domain_status(domain, 'not_checked', 'Not checked')
+
+    base_url = os.getenv('GODADDY_API_BASE', 'https://api.godaddy.com').strip().rstrip('/')
+    timeout = float(os.getenv('GODADDY_TIMEOUT_SECONDS', '4'))
+    url = f"{base_url}/v1/domains/available?domain={quote(domain)}"
+    request_headers = {
+        'Accept': 'application/json',
+        'Authorization': f"sso-key {api_key}:{api_secret}",
+    }
+    req = Request(url, headers=request_headers)
+    try:
+        with urlopen(req, timeout=timeout) as response:
+            payload = json.loads(response.read().decode('utf-8'))
+        return domain_status_from_godaddy(domain, payload)
+    except (HTTPError, URLError, TimeoutError, json.JSONDecodeError) as exc:
+        app.logger.warning('GoDaddy availability check failed for %s: %s', domain, exc)
+    except Exception as exc:
+        app.logger.exception('Unexpected GoDaddy availability error for %s: %s', domain, exc)
+    return domain_status(domain)
+
+
+def check_domain_availability(domains):
+    unique_domains = list(dict.fromkeys(domain for domain in domains if domain))
+    if not unique_domains:
+        return {}
+
+    api_key, api_secret = godaddy_credentials()
+    if not api_key or not api_secret:
+        return {domain: domain_status(domain, 'not_checked', 'Not checked') for domain in unique_domains}
+
+    now = time.time()
+    cache = load_domain_cache()
+    results = {}
+    missing_domains = []
+    for domain in unique_domains:
+        cached = cached_domain_status(cache, domain, now)
+        if cached:
+            results[domain] = cached
+        else:
+            missing_domains.append(domain)
+
+    if missing_domains:
+        max_workers = min(8, len(missing_domains))
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = {executor.submit(godaddy_domain_available, domain): domain for domain in missing_domains}
+            for future in as_completed(futures):
+                domain = futures[future]
+                try:
+                    status = future.result()
+                except Exception as exc:
+                    app.logger.exception('Domain availability worker failed for %s: %s', domain, exc)
+                    status = domain_status(domain)
+                results[domain] = status
+                cache[domain] = {
+                    'status': status.get('status', 'unknown'),
+                    'label': status.get('label', 'Check manually'),
+                    'checked_at': now,
+                }
+        save_domain_cache(cache)
+
+    return results
+
+
 def build_domain_info(name):
     base = domain_slug(name)
     ideas = [f"{base}.com", f"get{base}.com", f"{base}.co"]
@@ -981,8 +1116,42 @@ def build_domain_info(name):
     return {
         'primary': ideas[0],
         'alternatives': ideas[1:],
-        'note': 'Domain availability not checked.',
+        'note': 'Quick availability check not run yet.',
     }
+
+
+def attach_domain_availability(names):
+    domains = []
+    for item in names:
+        info = item.get('domain_info') or {}
+        domains.extend([info.get('primary'), *(info.get('alternatives') or [])])
+
+    statuses = check_domain_availability(domains)
+    if not statuses:
+        return names
+
+    for item in names:
+        info = item.get('domain_info')
+        if not info:
+            continue
+        primary_status = statuses.get(info.get('primary'))
+        alternative_statuses = [
+            statuses.get(domain, domain_status(domain))
+            for domain in info.get('alternatives', [])
+        ]
+        checked_statuses = [primary_status, *alternative_statuses]
+        status_values = {status.get('status') for status in checked_statuses if status}
+        if status_values <= {'not_checked'}:
+            note = 'Quick availability check not run yet.'
+        elif 'unknown' in status_values:
+            note = 'Quick check only, not guaranteed. Verify before purchase.'
+        else:
+            note = 'Quick GoDaddy check, not guaranteed. Verify before purchase.'
+
+        info['primary_status'] = primary_status
+        info['alternative_statuses'] = alternative_statuses
+        info['note'] = note
+    return names
 
 
 def clean_emotional_opener(value):
@@ -1078,7 +1247,8 @@ def enrich_name(item, form_data, index, total):
 
 
 def enrich_names(names, form_data):
-    return [enrich_name(item, form_data, index + 1, len(names)) for index, item in enumerate(names)]
+    enriched = [enrich_name(item, form_data, index + 1, len(names)) for index, item in enumerate(names)]
+    return attach_domain_availability(enriched)
 
 
 def parse_reactions(source):
@@ -2251,7 +2421,7 @@ def enrich_original_names(names, form_data=None):
         )
         enriched['domain_info'] = build_domain_info(enriched['name'])
         enriched_names.append(enriched)
-    return enriched_names
+    return attach_domain_availability(enriched_names)
 
 
 def generate_original_names(form_data, tune_direction='', previous_names=None, reaction_note=''):

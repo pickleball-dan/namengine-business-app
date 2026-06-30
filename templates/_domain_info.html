@@ -1,0 +1,21 @@
+<div class="domain-info">
+  <p class="panel-label">Domain quick check</p>
+  <div class="domain-primary-row">
+    <p class="domain-primary">{{ domain_info.primary }}</p>
+    {% if domain_info.primary_status and domain_info.primary_status.status != 'not_checked' %}
+    <span class="domain-status domain-status-{{ domain_info.primary_status.class }}">{{ domain_info.primary_status.label }}</span>
+    {% endif %}
+  </div>
+  <div class="domain-alt-row">
+    {% for domain in domain_info.alternatives %}
+    {% set status = domain_info.alternative_statuses[loop.index0] if domain_info.alternative_statuses else none %}
+    <span>
+      <span>{{ domain }}</span>
+      {% if status and status.status != 'not_checked' %}
+      <strong class="domain-status domain-status-{{ status.class }}">{{ status.label }}</strong>
+      {% endif %}
+    </span>
+    {% endfor %}
+  </div>
+  <p class="domain-note">{{ domain_info.note }}</p>
+</div>

@@ -12,6 +12,12 @@ services:
         sync: false
       - key: OPENAI_MODEL
         value: gpt-4.1-mini
+      - key: GODADDY_API_KEY
+        sync: false
+      - key: GODADDY_API_SECRET
+        sync: false
+      - key: GODADDY_API_BASE
+        value: https://api.godaddy.com
       - key: FEEDBACK_ADMIN_TOKEN
         sync: false
       - key: FEEDBACK_ENABLED

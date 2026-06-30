@@ -62,15 +62,9 @@
           <p><strong>Pronunciation</strong><span>{{ name.pronunciation }}</span></p>
         </div>
         {% if name.domain_info %}
-        <div class="domain-info detail-domain-info">
-          <p class="panel-label">Domain ideas</p>
-          <p class="domain-primary">{{ name.domain_info.primary }}</p>
-          <div class="domain-alt-row">
-            {% for domain in name.domain_info.alternatives %}
-            <span>{{ domain }}</span>
-            {% endfor %}
-          </div>
-          <p class="domain-note">{{ name.domain_info.note }}</p>
+        <div class="detail-domain-info">
+          {% set domain_info = name.domain_info %}
+          {% include '_domain_info.html' %}
         </div>
         {% endif %}
       </article>

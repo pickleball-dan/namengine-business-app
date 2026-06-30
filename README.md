@@ -16,6 +16,8 @@ Open http://localhost:5000
 - `OPENAI_API_KEY` - optional for live AI suggestions
 - `OPENAI_MODEL` - optional, defaults to `gpt-4.1-mini`
 - `OPENAI_ORIGINAL_MODEL` - optional model override for original-name generation, defaults to `OPENAI_MODEL`
+- `GODADDY_API_KEY` / `GODADDY_API_SECRET` - optional for domain quick-check badges
+- `GODADDY_API_BASE` - optional, defaults to `https://api.godaddy.com`
 
 Without an API key, the app uses a small curated fallback set so the product flow still works.
 

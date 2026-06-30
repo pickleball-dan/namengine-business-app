@@ -1214,6 +1214,13 @@ textarea { resize: vertical; }
   background: rgba(255, 255, 255, 0.62);
 }
 
+.domain-primary-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
 .domain-primary {
   margin: 0;
   color: var(--accent-deep);
@@ -1229,6 +1236,8 @@ textarea { resize: vertical; }
 
 .domain-alt-row span {
   display: inline-flex;
+  align-items: center;
+  gap: 5px;
   max-width: 100%;
   padding: 5px 8px;
   border-radius: 999px;
@@ -1237,6 +1246,46 @@ textarea { resize: vertical; }
   font-size: 0.78rem;
   font-weight: 700;
   overflow-wrap: anywhere;
+}
+
+.domain-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(66, 55, 42, 0.14);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.domain-status-available {
+  border-color: rgba(42, 121, 88, 0.22);
+  background: rgba(215, 241, 226, 0.86);
+  color: #205b42;
+}
+
+.domain-status-taken {
+  border-color: rgba(150, 74, 74, 0.2);
+  background: rgba(248, 226, 222, 0.82);
+  color: #7f3838;
+}
+
+.domain-status-premium {
+  border-color: rgba(173, 123, 38, 0.25);
+  background: rgba(253, 238, 200, 0.88);
+  color: #775214;
+}
+
+.domain-status-unknown {
+  border-color: rgba(36, 99, 166, 0.16);
+  background: rgba(230, 239, 249, 0.88);
+  color: var(--accent-business);
 }
 
 .domain-note {
