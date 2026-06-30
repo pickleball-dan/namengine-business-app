@@ -991,8 +991,8 @@ def domain_status(domain, status='unknown', label=''):
             'available': 'Available',
             'taken': 'Taken',
             'premium': 'Premium',
-            'not_checked': 'Not checked',
-            'unknown': 'Unknown',
+            'not_checked': 'Not verified',
+            'unknown': 'Not verified',
         }.get(status, status.replace('_', ' ').title())
     return {
         'domain': domain,
