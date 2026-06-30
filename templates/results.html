@@ -41,7 +41,12 @@
       {% endfor %}
       <input type="hidden" name="shortlist_id" value="{{ shortlist_id }}">
 
-      <section class="results-grid">
+      <div class="mobile-focus-meta">
+        <span>{{ reaction_progress_label }}</span>
+        <a href="#all-names">View all</a>
+      </div>
+
+      <section id="all-names" class="results-grid focus-card-grid">
         {% for item in names %}
         <article class="name-card {% if item.standout %}featured-card{% endif %}">
           <div class="name-top">
@@ -67,6 +72,7 @@
           {% endif %}
           <p class="why">{{ item.why }}</p>
           <div class="reaction-block">
+            <p class="reaction-label">How does this name land?</p>
             <p class="reaction-feedback" aria-live="polite"></p>
             <div class="reaction-options">
               {% for option in reaction_options %}
@@ -90,6 +96,14 @@
         </article>
         {% endfor %}
       </section>
+
+      <div class="mobile-focus-dock">
+        <div>
+          <strong class="js-reaction-progress-label">{{ reaction_progress_label }}</strong>
+          <span>Scroll for next | View all anytime</span>
+        </div>
+        <button type="submit" class="js-loading-button" {% if not has_enough_reactions %}disabled{% endif %}>Refine</button>
+      </div>
 
       {% if taste_summary_note %}
       <section class="taste-summary-card">
@@ -121,7 +135,12 @@
       </section>
     </form>
     {% else %}
-    <section class="results-grid">
+    <div class="mobile-focus-meta">
+      <span>{{ names|length }} names</span>
+      <a href="#all-names">View all</a>
+    </div>
+
+    <section id="all-names" class="results-grid focus-card-grid">
       {% for item in names %}
       <article class="name-card {% if item.standout %}featured-card{% endif %}">
         <div class="name-top">
@@ -217,8 +236,8 @@
     });
 
     document.querySelectorAll('.results-grid-form').forEach((form) => {
-      const button = form.querySelector('.js-loading-button');
-      const progressLabel = form.querySelector('.js-reaction-progress-label');
+      const buttons = form.querySelectorAll('.js-loading-button');
+      const progressLabels = form.querySelectorAll('.js-reaction-progress-label');
       const progressFill = form.querySelector('.js-reaction-progress-fill');
       const cards = Array.from(form.querySelectorAll('.name-card'));
       const feedbackTimers = new WeakMap();
@@ -255,16 +274,16 @@
           }
         });
 
-        if (progressLabel) {
+        progressLabels.forEach((progressLabel) => {
           progressLabel.textContent = `${selected} of ${cards.length} reactions`;
-        }
+        });
         if (progressFill) {
           const fillPercent = cards.length ? (selected / cards.length) * 100 : 0;
           progressFill.style.width = `${fillPercent}%`;
         }
-        if (button) {
+        buttons.forEach((button) => {
           button.disabled = selected < 3;
-        }
+        });
       };
 
       form.addEventListener('change', (event) => {

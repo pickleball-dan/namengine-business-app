@@ -93,7 +93,12 @@
       <input type="hidden" name="previous_names" value="{{ previous_names|join('||') }}">
       <input type="hidden" name="tune_history" value="{{ tune_history|join('||') }}">
 
-      <section class="results-grid original-results-grid">
+      <div class="mobile-focus-meta">
+        <span>{% if can_react %}0 of {{ names|length }} reviewed{% else %}{{ names|length }} names{% endif %}</span>
+        <a href="#all-names">View all</a>
+      </div>
+
+      <section id="all-names" class="results-grid original-results-grid focus-card-grid">
         {% for item in names %}
         <article class="name-card original-name-card {% if item.highlight %}featured-card{% endif %}">
           <div class="name-top">
@@ -120,6 +125,7 @@
           <p class="why">{{ item.why }}</p>
           {% if can_react %}
           <div class="reaction-block">
+            <p class="reaction-label">How does this name land?</p>
             <p class="reaction-feedback" aria-live="polite"></p>
             <div class="reaction-options">
               {% for option in reaction_options %}
@@ -211,7 +217,7 @@
     });
 
     document.querySelectorAll('.original-results-form').forEach((form) => {
-      const progressLabel = form.querySelector('.js-reaction-progress-label');
+      const progressLabels = form.querySelectorAll('.js-reaction-progress-label');
       const progressFill = form.querySelector('.js-reaction-progress-fill');
       const cards = Array.from(form.querySelectorAll('.name-card'));
       const feedbackTimers = new WeakMap();
@@ -248,9 +254,9 @@
           }
         });
 
-        if (progressLabel) {
+        progressLabels.forEach((progressLabel) => {
           progressLabel.textContent = `${selected} of ${cards.length} reactions`;
-        }
+        });
         if (progressFill) {
           const fillPercent = cards.length ? (selected / cards.length) * 100 : 0;
           progressFill.style.width = `${fillPercent}%`;
