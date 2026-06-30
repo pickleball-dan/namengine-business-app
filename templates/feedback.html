@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Beta feedback | NamEngine Business</title>
-  <meta name="description" content="Share beta feedback for NamEngine Business.">
+  <title>{% if submitted %}Feedback received{% else %}Beta feedback{% endif %} | NamEngine Business</title>
+  <meta name="description" content="{% if submitted %}Feedback received for NamEngine Business.{% else %}Share beta feedback for NamEngine Business.{% endif %}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -17,24 +17,23 @@
       <div>
         <img class="logo-lockup small-logo" src="{{ url_for('static', filename='images/namengine-business-logo.png') }}" alt="NamEngine Business logo">
         <p class="eyebrow">Beta feedback</p>
+        {% if submitted %}
+        <h1>Feedback received. Thank you for helping shape NamEngine Business</h1>
+        {% else %}
         <h1>Tell us what worked, what didn’t, and what felt missing.</h1>
         <p class="lede">A few honest notes are more useful than a polished review. If something felt confusing, slow, awkward, surprisingly good, or worth sharing, put it here.</p>
+        {% endif %}
         <div class="hero-actions dual-actions">
           <a class="button-link secondary-button" href="/">Back to NamEngine Business</a>
         </div>
       </div>
     </section>
 
+    {% if not submitted %}
     <section class="form-card">
       <div class="section-heading">
         <h2>What should we know?</h2>
       </div>
-
-      {% if submitted %}
-      <div class="notice success-notice">
-        Feedback received. Thank you for helping shape NamEngine Business.
-      </div>
-      {% endif %}
 
       <form action="{{ url_for('feedback') }}" method="post" class="intake-form feedback-form">
         <input type="hidden" name="page_url" value="{{ form_data.page_url }}">
@@ -138,14 +137,17 @@
         </div>
       </form>
     </section>
+    {% endif %}
   </main>
 
+  {% if not submitted %}
   <script>
     const pageUrl = document.querySelector('input[name="page_url"]');
     if (pageUrl && !pageUrl.value) {
       pageUrl.value = document.referrer || window.location.href;
     }
   </script>
+  {% endif %}
 </body>
 </html>
 
