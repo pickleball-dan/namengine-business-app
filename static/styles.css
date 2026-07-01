@@ -1324,6 +1324,10 @@ textarea { resize: vertical; }
   color: var(--ink);
 }
 
+.why-label {
+  display: none;
+}
+
 .focus-card-grid .reaction-label,
 .mobile-focus-meta,
 .mobile-focus-dock {
@@ -2229,8 +2233,18 @@ textarea { resize: vertical; }
   }
 
   .focus-card-grid .why {
+    margin-top: 0;
     font-size: 1.08rem;
     line-height: 1.42;
+  }
+
+  .focus-card-grid .why-label {
+    display: block;
+    margin: 4px 0 0;
+    color: var(--ink);
+    font-size: 1.18rem;
+    font-weight: 800;
+    text-align: center;
   }
 
   .focus-card-grid .reaction-block {
