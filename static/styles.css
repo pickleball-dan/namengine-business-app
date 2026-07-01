@@ -380,33 +380,6 @@ h3 {
   max-width: 780px;
 }
 
-.home-hero-with-motif {
-  display: grid;
-  grid-template-columns: minmax(0, 0.72fr) minmax(220px, 0.48fr);
-  gap: 22px;
-  align-items: center;
-  overflow: hidden;
-}
-
-.home-hero-with-motif > .home-hero-copy {
-  max-width: 560px;
-}
-
-.hero-motif {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin: 0;
-  min-width: 0;
-}
-
-.hero-motif svg {
-  display: block;
-  width: min(100%, 390px);
-  height: auto;
-  mix-blend-mode: multiply;
-}
-
 .original-path-button {
   background: linear-gradient(135deg, var(--accent-deep) 0%, var(--accent-business) 100%);
   box-shadow: 0 18px 34px rgba(18, 54, 98, 0.18);
@@ -1970,24 +1943,6 @@ textarea { resize: vertical; }
   .home-path-actions {
     grid-template-columns: 1fr;
     width: 100%;
-  }
-
-  .home-hero-with-motif {
-    grid-template-columns: minmax(0, 0.68fr) minmax(130px, 0.5fr);
-    gap: 10px;
-    align-items: center;
-  }
-
-  .home-hero-with-motif h1 {
-    font-size: clamp(2.45rem, 7.3vw, 3.05rem);
-  }
-
-  .hero-motif {
-    justify-content: flex-end;
-  }
-
-  .hero-motif svg {
-    width: min(220px, 48vw);
   }
 
   .home-path-button,
