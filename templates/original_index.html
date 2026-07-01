@@ -84,12 +84,12 @@
             <div class="select-wrap tinted-select tinted-aqua">
               <select name="pet_type">
                 <option value="" {% if not form_data.pet_type %}selected{% endif %}>Choose</option>
-                <option {% if form_data.pet_type == 'Company (organization)' %}selected{% endif %}>Company (organization)</option>
-                <option {% if form_data.pet_type == 'Brand (consumer-facing identity)' %}selected{% endif %}>Brand (consumer-facing identity)</option>
-                <option {% if form_data.pet_type == 'Product (physical or digital)' %}selected{% endif %}>Product (physical or digital)</option>
-                <option {% if form_data.pet_type == 'Service (offering)' %}selected{% endif %}>Service (offering)</option>
-                <option {% if form_data.pet_type == 'App / Software (specialized product with its own conventions)' %}selected{% endif %}>App / Software (specialized product with its own conventions)</option>
-                <option {% if form_data.pet_type == 'Content / Media (newsletter, podcast, YouTube channel, publication)' %}selected{% endif %}>Content / Media (newsletter, podcast, YouTube channel, publication)</option>
+                <option {% if form_data.pet_type == 'Company' %}selected{% endif %}>Company</option>
+                <option {% if form_data.pet_type == 'Brand' %}selected{% endif %}>Brand</option>
+                <option {% if form_data.pet_type == 'Product' %}selected{% endif %}>Product</option>
+                <option {% if form_data.pet_type == 'Service' %}selected{% endif %}>Service</option>
+                <option {% if form_data.pet_type == 'App / Software' %}selected{% endif %}>App / Software</option>
+                <option {% if form_data.pet_type == 'Content / Media' %}selected{% endif %}>Content / Media</option>
               </select>
             </div>
           </label>
