@@ -93,6 +93,7 @@
               <a href="{{ url_for('name_detail', slug=item.slug) }}?shortlist={{ shortlist_id }}" class="button-link tertiary-button detail-link">Open full detail</a>
             </div>
           </details>
+          <button type="submit" form="choose-{{ share_id }}-{{ item.slug }}" class="button-link choose-name-button">Choose this name</button>
         </article>
         {% endfor %}
       </section>
@@ -172,6 +173,7 @@
             <a href="{{ url_for('name_detail', slug=item.slug) }}?shortlist={{ shortlist_id }}" class="button-link tertiary-button detail-link">Open full detail</a>
           </div>
         </details>
+        <button type="submit" form="choose-{{ share_id }}-{{ item.slug }}" class="button-link choose-name-button">Choose this name</button>
       </article>
       {% endfor %}
     </section>
@@ -208,6 +210,13 @@
       </article>
     </section>
     {% endif %}
+
+    {% for item in names %}
+    <form id="choose-{{ share_id }}-{{ item.slug }}" action="{{ url_for('choose_name') }}" method="post" class="choose-hidden-form">
+      <input type="hidden" name="share_id" value="{{ share_id }}">
+      <input type="hidden" name="slug" value="{{ item.slug }}">
+    </form>
+    {% endfor %}
   </main>
 
   <script src="{{ url_for('static', filename='taste-history.js') }}"></script>

@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ meta_title }}</title>
+  <meta name="description" content="{{ meta_description }}">
+  <meta property="og:title" content="{{ meta_title }}">
+  <meta property="og:description" content="{{ meta_description }}">
+  <meta property="og:image" content="{{ meta_image }}">
+  <meta property="og:image:width" content="{{ meta_image_width }}">
+  <meta property="og:image:height" content="{{ meta_image_height }}">
+  <meta property="og:image:type" content="{{ meta_image_type }}">
+  <meta property="og:url" content="{{ share_url }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="NamEngine Business">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ meta_title }}">
+  <meta name="twitter:description" content="{{ meta_description }}">
+  <meta name="twitter:image" content="{{ meta_image }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  {% include '_platform_nav.html' %}
+  <main class="shell chosen-shell">
+    <section class="chosen-hero hero-card">
+      <div class="celebration-burst" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="confetti-field" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <img class="logo-lockup small-logo" src="{{ url_for('static', filename='images/namengine-business-logo.png') }}" alt="NamEngine Business logo">
+      <p class="eyebrow">Name chosen</p>
+      <h1>You chose {{ name.name }}.</h1>
+      {% if name.pronunciation %}
+      <p class="pronunciation detail-pronunciation">/{{ name.pronunciation }}/</p>
+      {% endif %}
+      {% if name.emotional_opener %}
+      <p class="chosen-opener">{{ name.emotional_opener }}</p>
+      {% endif %}
+
+      <div class="chosen-actions share-actions">
+        <button type="button" class="button-link js-share-trigger" data-share-url="{{ share_url }}" data-share-message="{{ share_message }}">Share this name</button>
+        <button type="button" class="button-link secondary-button js-share-fallback" data-share-url="{{ share_url }}">Copy link</button>
+        <a class="button-link tertiary-button" href="{{ source_link }}">Back to list</a>
+      </div>
+      <p class="loading-note js-share-feedback" aria-live="polite"></p>
+    </section>
+
+    <section class="detail-columns premium-detail-columns">
+      <article class="detail-card">
+        <p class="panel-label">Why it fits</p>
+        <p class="why">{{ name.fit_note or name.why }}</p>
+      </article>
+
+      <article class="detail-card">
+        <p class="panel-label">Name essentials</p>
+        <div class="detail-row">
+          {% if name.origin %}
+          <p><strong>Origin</strong><span>{{ name.origin }}</span></p>
+          {% endif %}
+          {% if name.meaning %}
+          <p><strong>Meaning</strong><span>{{ name.meaning }}</span></p>
+          {% endif %}
+          {% if name.style %}
+          <p><strong>Style</strong><span>{{ name.style }}</span></p>
+          {% endif %}
+          {% if name.structure %}
+          <p><strong>Structure</strong><span>{{ name.structure }}</span></p>
+          {% endif %}
+        </div>
+        {% if name.domain_info %}
+        <div class="detail-domain-info">
+          {% set domain_info = name.domain_info %}
+          {% include '_domain_info.html' %}
+        </div>
+        {% endif %}
+      </article>
+    </section>
+
+    <section class="share-panel chosen-context-panel">
+      <div>
+        <p class="panel-label">Chosen from</p>
+        <h2>{{ source_label }}</h2>
+        <p>{{ preference_summary }}</p>
+      </div>
+      <div class="share-actions action-stack">
+        <a class="button-link secondary-button" href="{{ start_over_link }}">Start a new Business list</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const absoluteShareUrl = (path) => {
+      try {
+        return new URL(path, window.location.origin).toString();
+      } catch (error) {
+        return path;
+      }
+    };
+
+    document.querySelectorAll('.share-actions').forEach((actions) => {
+      if (navigator.share) {
+        actions.classList.add('is-native');
+      }
+    });
+
+    document.querySelectorAll('.js-share-trigger').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const path = button.dataset.shareUrl;
+        const text = button.dataset.shareMessage;
+        const feedback = document.querySelector('.js-share-feedback');
+        const shareUrl = absoluteShareUrl(path);
+
+        try {
+          if (navigator.share) {
+            await navigator.share({
+              title: 'My chosen NamEngine Business name',
+              text,
+              url: shareUrl,
+            });
+            if (feedback) {
+              feedback.textContent = 'Shared.';
+              feedback.classList.add('is-visible');
+            }
+            return;
+          }
+
+          await navigator.clipboard.writeText(shareUrl);
+          if (feedback) {
+            feedback.textContent = 'Share link copied.';
+            feedback.classList.add('is-visible');
+          }
+        } catch (error) {
+          if (feedback) {
+            feedback.textContent = 'Share cancelled.';
+            feedback.classList.add('is-visible');
+          }
+        }
+      });
+    });
+
+    document.querySelectorAll('.js-share-fallback').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const feedback = document.querySelector('.js-share-feedback');
+        try {
+          await navigator.clipboard.writeText(absoluteShareUrl(button.dataset.shareUrl));
+          if (feedback) {
+            feedback.textContent = 'Share link copied.';
+            feedback.classList.add('is-visible');
+          }
+        } catch (error) {
+          if (feedback) {
+            feedback.textContent = 'Could not copy link.';
+            feedback.classList.add('is-visible');
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -22,6 +22,9 @@
         <p class="detail-first-impression">{{ detail_profile.first_impression }}</p>
         {% endif %}
         <div class="detail-actions">
+          {% if share_id %}
+          <button type="submit" form="choose-detail-name" class="button-link choose-name-button">Choose this name</button>
+          {% endif %}
           <a class="button-link secondary-button" href="{{ refine_link }}">Refine taste</a>
           <a class="button-link tertiary-button" href="{{ start_over_link }}">Start over</a>
           <a href="{{ url_for('results') }}?shortlist={{ shortlist_id }}" class="button-link tertiary-button">Back to list</a>
@@ -112,6 +115,13 @@
         {% endfor %}
       </div>
     </section>
+
+    {% if share_id %}
+    <form id="choose-detail-name" action="{{ url_for('choose_name') }}" method="post" class="choose-hidden-form">
+      <input type="hidden" name="share_id" value="{{ share_id }}">
+      <input type="hidden" name="slug" value="{{ name.slug }}">
+    </form>
+    {% endif %}
   </main>
 </body>
 </html>

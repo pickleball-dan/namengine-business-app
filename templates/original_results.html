@@ -148,6 +148,7 @@
               <p>{{ item.originality_note }}</p>
             </div>
           </details>
+          <button type="submit" form="choose-{{ share_id }}-{{ item.slug }}" class="button-link choose-name-button">Choose this name</button>
         </article>
         {% endfor %}
       </section>
@@ -191,6 +192,13 @@
         {% endif %}
       </div>
     </section>
+
+    {% for item in names %}
+    <form id="choose-{{ share_id }}-{{ item.slug }}" action="{{ url_for('choose_name') }}" method="post" class="choose-hidden-form">
+      <input type="hidden" name="share_id" value="{{ share_id }}">
+      <input type="hidden" name="slug" value="{{ item.slug }}">
+    </form>
+    {% endfor %}
   </main>
 
   <script src="{{ url_for('static', filename='taste-history.js') }}"></script>
