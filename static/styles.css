@@ -1325,7 +1325,10 @@ textarea { resize: vertical; }
 }
 
 .why-label {
-  display: none;
+  display: block;
+  margin: 8px 0 0;
+  color: var(--ink);
+  font-weight: 800;
 }
 
 .focus-card-grid .reaction-label,
