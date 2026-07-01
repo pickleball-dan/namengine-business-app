@@ -97,15 +97,12 @@
                 <div class="select-wrap tinted-select tinted-aqua">
                   <select name="pet_type" data-brief-label="Project">
                     <option value="" {% if not form_data.pet_type %}selected{% endif %}>Choose</option>
-                    <option {% if form_data.pet_type == 'Business' %}selected{% endif %}>Business</option>
-                    <option {% if form_data.pet_type == 'Startup' %}selected{% endif %}>Startup</option>
-                    <option {% if form_data.pet_type == 'Product' %}selected{% endif %}>Product</option>
-                    <option {% if form_data.pet_type == 'App / software' %}selected{% endif %}>App / software</option>
-                    <option {% if form_data.pet_type == 'Studio / agency' %}selected{% endif %}>Studio / agency</option>
-                    <option {% if form_data.pet_type == 'Local service' %}selected{% endif %}>Local service</option>
-                    <option {% if form_data.pet_type == 'Nonprofit' %}selected{% endif %}>Nonprofit</option>
-                    <option {% if form_data.pet_type == 'Newsletter / media' %}selected{% endif %}>Newsletter / media</option>
-                    <option {% if form_data.pet_type == 'Other' %}selected{% endif %}>Other</option>
+                    <option {% if form_data.pet_type == 'Company (organization)' %}selected{% endif %}>Company (organization)</option>
+                    <option {% if form_data.pet_type == 'Brand (consumer-facing identity)' %}selected{% endif %}>Brand (consumer-facing identity)</option>
+                    <option {% if form_data.pet_type == 'Product (physical or digital)' %}selected{% endif %}>Product (physical or digital)</option>
+                    <option {% if form_data.pet_type == 'Service (offering)' %}selected{% endif %}>Service (offering)</option>
+                    <option {% if form_data.pet_type == 'App / Software (specialized product with its own conventions)' %}selected{% endif %}>App / Software (specialized product with its own conventions)</option>
+                    <option {% if form_data.pet_type == 'Content / Media (newsletter, podcast, YouTube channel, publication)' %}selected{% endif %}>Content / Media (newsletter, podcast, YouTube channel, publication)</option>
                   </select>
                 </div>
               </label>
