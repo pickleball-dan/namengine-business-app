@@ -114,6 +114,8 @@ REACTION_OPTIONS = [
 
 REACTION_LABELS = {item['value']: item['label'] for item in REACTION_OPTIONS}
 REACTION_IMAGES = {item['value']: item['image'] for item in REACTION_OPTIONS}
+PRIMARY_REACTION_VALUES = {'love', 'maybe', 'no'}
+PRIMARY_REACTION_OPTIONS = [item for item in REACTION_OPTIONS if item['value'] in PRIMARY_REACTION_VALUES]
 
 
 @app.context_processor
@@ -2561,7 +2563,7 @@ def build_original_payload(form_data, tune_direction='', previous_names=None, tu
         'tune_history': updated_history,
         'tune_chips': [item.replace('_', ' ').title() for item in updated_history[-3:]] or ['First pass'],
         'previous_names': [item['name'] for item in previous_name_items] + [item['name'] for item in names],
-        'reaction_options': REACTION_OPTIONS,
+        'reaction_options': PRIMARY_REACTION_OPTIONS,
         'reactions': reactions,
         'can_react': not bool(updated_history),
     }
@@ -2589,7 +2591,7 @@ def generate_shortlist_payload(form_data, *, refinement_note='', prior_reactions
         'start_over_link': '/#brief',
         'form_data': form_data,
         'intake_dimensions': infer_dimensions(form_data),
-        'reaction_options': REACTION_OPTIONS,
+        'reaction_options': PRIMARY_REACTION_OPTIONS,
         'reactions': reactions,
         'reaction_summary': build_reaction_summary(names, reactions) if reactions else '',
         'reaction_effect_note': '',
